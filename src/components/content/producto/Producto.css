@@ -1,0 +1,5 @@
+.custom-search input {
+    border: none;
+    outline: none;
+    flex-grow: 1;
+}
