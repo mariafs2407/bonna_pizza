@@ -50,7 +50,7 @@ function NuevoProducto(props) {
     }, []);
 
     const leerProveedores = (e) => {
-        const rutaServicio = "https://profinal-production.up.railway.app/listar_proveedores.php";
+        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_proveedores.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -61,7 +61,7 @@ function NuevoProducto(props) {
     }
 
     const leerCategorias = (e) => {
-        const rutaServicio = "https://profinal-production.up.railway.app/listar_categorias.php";
+        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -84,7 +84,7 @@ function NuevoProducto(props) {
 
     //validaciones:
     const validacionForm = () => {
-        const solo_letra = /^[a-zA-Z\s]+$/;
+        const solo_letra = /^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$/;
         if ( nombre === '' || idproveedor=== ''  || idcategoria=== ''  || unidadmedida=== '' ) {
             Swal.fire({
                 icon: 'info',

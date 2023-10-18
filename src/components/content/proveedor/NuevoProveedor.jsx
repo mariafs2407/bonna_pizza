@@ -15,10 +15,11 @@ function NuevoProveedor(props) {
     const [cargoContacto, setCargoContacto] = useState('');
     const [direccion, setDireccion] = useState('');
     const [distrito, setDistrito] = useState('');
-    const [telefono, setTelefono] = useState('');
+    const [telefono, setTelefono] = useState('');   
+    const [distritocombo, setdistritocombo] = useState([]);
+
     const [ruc, SetRuc] = useState('');
     const [rucExiste, setrucExiste] = useState([]);
-    const [distritocombo, setdistritocombo] = useState([]);
 
     const opcionesCargoConacto = [
         'Gerente de ventas',
@@ -29,14 +30,37 @@ function NuevoProveedor(props) {
 
     useEffect(() => {
         leerDistritos();
-    }, []);    
+    }, []);
 
     useEffect(() => {
-        validarRUC();
-    }, []);    
+       validarRUCBD();
+    }, []);
 
-    
-    const validarRUC = () =>{
+   /* const validarRucAPI = async () => {
+        try {
+            const FormData = new URLSearchParams();
+            FormData.append("vruc", ruc)
+            const apiUrl = `https://profinal-production-2983.up.railway.app/ruc_existe.php`;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }),
+                body: FormData
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setrucExiste(data);
+                    console.log(rucExiste);
+                })
+        } catch (error) {
+            console.error('Ruc ingresado no es válido', error);
+
+        }
+    }*/
+
+    const validarRUCBD = () => {
         const FormData = new URLSearchParams();
         FormData.append("vruc", ruc)
 
@@ -47,11 +71,11 @@ function NuevoProveedor(props) {
             }),
             body: FormData
         })
-        .then((response) => response.json())
-        .then((data) => {
-            setrucExiste(data);
-            console.log(rucExiste);
-        })
+            .then((response) => response.json())
+            .then((data) => {
+                setrucExiste(data);
+                console.log(rucExiste);
+            })
     }
 
     const leerDistritos = () => {
@@ -65,11 +89,12 @@ function NuevoProveedor(props) {
             });
     };
 
-    
+
 
     //validaciones:
-    const validacionForm = () => {
-        const solo_letra = /^[a-zA-Z\s]+$/;
+    const validacionForm = async () => {
+        const solo_numero = /^[0-9]+$/;
+        const rucEmpiezaEn10o20 = /^(10|20)\d{9}$/;
 
         if (!nombre === '' || !apellido === '' || !nombreContacto === '' ||
             !cargoContacto === '' || !direccion === '' || !distrito === '' ||
@@ -79,6 +104,14 @@ function NuevoProveedor(props) {
                 icon: 'info',
                 title: 'Error de validación',
                 text: 'Todos los campos son obligatorios',
+            })
+            console.log("error")
+            return false;
+        }else if (!ruc.match(rucEmpiezaEn10o20)) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'El campo RUC debe comenzar con 10 o 20 y tener 11 digitos',
             })
             console.log("error")
             return false;
@@ -98,7 +131,7 @@ function NuevoProveedor(props) {
             })
             console.log("error")
             return false;
-        } else if (!solo_letra.test(nombre) || !solo_letra.test(apellido)) {
+        } else if (solo_numero.test(nombre) || solo_numero.test(apellido)) {
             Swal.fire({
                 icon: 'info',
                 title: 'Error de validación',
@@ -106,16 +139,7 @@ function NuevoProveedor(props) {
             })
             console.log("error")
             return false;
-        }
-        else if (rucExiste === -1) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Error de validación',
-                text: ' El RUC ingresado ya se encuentra en uso',
-            })            
-            return false;
-        }
-        else {
+        } else {
             console.log("validacion exitosa")
             return true;
         }
@@ -123,9 +147,11 @@ function NuevoProveedor(props) {
 
 
     const handleSubmit = async (e) => {
-        
-        e.preventDefault();        
-        if (validacionForm()) {
+        e.preventDefault();
+
+        const esValido = await validacionForm();
+
+        if (esValido) {
 
             const datos = JSON.parse(localStorage.getItem('datosUsuario'));
             console.log(datos)
@@ -165,7 +191,7 @@ function NuevoProveedor(props) {
                                 navigate('/proveedores')
                             }
                             if (data === -2) {
-                                Swal.fire("Error al registrar",'','error');
+                                Swal.fire("Error al registrar", '', 'error');
                             }
                         })
                         .catch((error) => {
@@ -197,7 +223,7 @@ function NuevoProveedor(props) {
                 </section>
 
                 <section className="content">
-                    <form onSubmit={handleSubmit}  method="post">
+                    <form onSubmit={handleSubmit} method="post">
                         <div className=" container-fluid">
                             <div class="row">
                                 <div className="col-12">
@@ -234,12 +260,13 @@ function NuevoProveedor(props) {
                                                     <div className="form-group">
                                                         <label htmlFor="inputRuc">Ruc</label>
                                                         <input type="text"
-                                                            value={ruc}                                                            
-                                                            onChange={(e) => {                                                                
+                                                            value={ruc}
+                                                            onChange={(e) => {
                                                                 const val = e.target.value;
                                                                 if (/^\d*$/.test(val) && val.length <= 11) {
-                                                                    SetRuc(val);                                                                    
-                                                                }                                                                
+                                                                    SetRuc(val);
+                                                                    
+                                                                }
                                                             }}
                                                             id="inputRuc" className="form-control"
                                                             placeholder="Numero de RUC"
@@ -304,19 +331,19 @@ function NuevoProveedor(props) {
                                                 </div>
                                                 <div className="col-md-6">
                                                     <div className="form-group">
-                                                    <label htmlFor="inputDistrito">Distrito</label>
-                                                    <select class="form-control custom-select"
-                                                        value={distrito}
-                                                        onChange={(e) => setDistrito(e.target.value)}
-                                                        id="inputCargoContacto"
-                                                        data-placeholder="Seleccione una opcion">
-                                                        <option value="">Seleccionar un distrito</option>
-                                                        {distritocombo.map((item) => (
-                                                            <option key={item.id} value={item.nombre}>
-                                                                {item.nombre}
-                                                            </option>
-                                                        ))}
-                                                    </select>    
+                                                        <label htmlFor="inputDistrito">Distrito</label>
+                                                        <select class="form-control custom-select"
+                                                            value={distrito}
+                                                            onChange={(e) => setDistrito(e.target.value)}
+                                                            id="inputCargoContacto"
+                                                            data-placeholder="Seleccione una opcion">
+                                                            <option value="">Seleccionar un distrito</option>
+                                                            {distritocombo.map((item) => (
+                                                                <option key={item.id} value={item.nombre}>
+                                                                    {item.nombre}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>

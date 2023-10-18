@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCarrot} from '@fortawesome/free-solid-svg-icons';
 import './Productos';
 import '../../../index';
 
@@ -22,7 +24,7 @@ const Productos = (props) => {
     const [categorias, setCategorias] = useState([]);
 
     const leerCategorias = (e) => {
-        const rutaServicio = "https://profinal-production.up.railway.app/listar_categorias.php";
+        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -71,7 +73,7 @@ const Productos = (props) => {
     const endIndex = starIndex + elemntsPage;
     const currentProductos = filterProductos.slice(starIndex, endIndex);
 
-    let productoEstado = currentProductos.filter( (producto) => {
+    let productoEstado = currentProductos.filter((producto) => {
         const cumpleEstado = estadoSeleccionado === "Todos" || producto.Estado === estadoSeleccionado;
         const cumpleDescontinuado = descontinuadoSeleccionado === "Todos" || producto.Descontinuado === descontinuadoSeleccionado;
         const cumpleCategoria = categoriaSeleccionado === "Todos" || producto.Categoria === categoriaSeleccionado;
@@ -95,7 +97,7 @@ const Productos = (props) => {
                 <div className="container-fluid">
                     <div className="row mb-2">
                         <div className="col-sm-6">
-                            <h1>Lista de Igredientes :</h1>
+                            <h1>Lista de Ingredientes :</h1>
                         </div>
                     </div>
                 </div>
@@ -111,7 +113,8 @@ const Productos = (props) => {
                                     <div className="col-12 ">
                                         <button type="submit" className="btn btn-success float-left ml-4 mt-3"
                                             onClick={() => navigate('./nuevo')}>
-                                            <i class="bi bi-patch-plus pr-2"></i> Nuevo Ingrediente
+                                            <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{color: "#fff",}} />
+                                            Nuevo Ingrediente
                                         </button>
 
                                         <div className="form-inline float-right mr-4 mt-3">
@@ -139,7 +142,7 @@ const Productos = (props) => {
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
                                                 id="inputEstado"
                                                 name='Estado'
-                                                className="form-control custom-select pr-4"                                                                                                 >
+                                                className="form-control custom-select pr-4">
                                                 <option value="Activo">Activo</option>
                                                 <option value="Inactivo">Inactivo</option>
                                                 <option value="Todos">Todos</option>
@@ -163,7 +166,7 @@ const Productos = (props) => {
                                             <label htmlFor="inputDescontinuado" className='mr-3'>Seleccionar Categoría :</label>
                                             <select id="inputCategoria"
                                                 onChange={(e) => setCategoriaSeleccionado(e.target.value)}
-                                                className="form-control custom-select pr-4"  
+                                                className="form-control custom-select pr-4"
                                                 data-placeholder="Seleccione una opcion">
                                                 {categorias.map((categoria) => (
                                                     <option key={categoria.Id_Cat} value={categoria.nombre}>
@@ -180,6 +183,7 @@ const Productos = (props) => {
                                     <table className="table table-head-fixed table-hover text-nowrap">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Codigo</th>
                                                 <th>Ingrediente</th>
                                                 <th>Proveedor</th>
@@ -188,20 +192,12 @@ const Productos = (props) => {
                                                 <th>Unidad de Medida</th>
                                                 <th>Descontinuado</th>
                                                 <th>Estado</th>
-                                                <th>Acciones</th>
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {productoEstado.map((producto) => (
                                                 <tr key={producto.Codigo}>
-                                                    <td>{producto.Codigo}</td>
-                                                    <td>{producto.Producto}</td>
-                                                    <td>{producto.Proveedor}</td>
-                                                    <td>{producto.Categoria}</td>
-                                                    <td>{producto.StockMinimo}</td>
-                                                    <td>{producto.U_Medida}</td>
-                                                    <td>{producto.Descontinuado}</td>
-                                                    <td>{producto.Estado}</td>
                                                     <td className="project-actions text-right">
                                                         <Link
                                                             to={`./editar/${producto.Codigo}`}
@@ -211,6 +207,15 @@ const Productos = (props) => {
                                                             Editar
                                                         </Link>
                                                     </td>
+                                                    <td>{producto.Codigo}</td>
+                                                    <td>{producto.Producto}</td>
+                                                    <td>{producto.Proveedor}</td>
+                                                    <td>{producto.Categoria}</td>
+                                                    <td>{producto.StockMinimo}</td>
+                                                    <td>{producto.U_Medida}</td>
+                                                    <td>{producto.Descontinuado}</td>
+                                                    <td>{producto.Estado}</td>
+
                                                 </tr>
                                             ))}
 

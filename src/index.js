@@ -23,8 +23,10 @@ import EditarCategoria from './components/content/categoria/EditarCategoria';
 import NuevaCategoria from './components/content/categoria/NuevaCategoria';
 //ingreso de productos(compra)
 import IngresoProducto from './components/content/ingresoProducto/IngresoProducto';
+import Compra from './components/content/ingresoProducto/Compras';
 //salida de productos(orden)
 import SalidaProducto from './components/content/salidaProducto/SalidaProducto';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -47,10 +49,13 @@ root.render(
           <Route path='editar/:id' element={<EditarCategoria/>} />
           <Route path='nuevo' element={<NuevaCategoria/>} />
         </Route>
-        <Route path='/ingresoProducto' element={<App/>} >
-          <Route index element={<IngresoProducto/>} /> 
+        {/* compra de productos */}
+        <Route path='/compras' element={<App/>} >
+          <Route index element={<Compra/>} /> 
+          <Route path='ingresoProducto' element={<IngresoProducto/>} />
         </Route>
-        <Route path='/salidaProducto' element={<App/>} >
+        {/* orden de productos */}
+        <Route path='/salidaProducto' element={<App/>} > 
           <Route index element={<SalidaProducto/>} />  
         </Route>
       </Route>     

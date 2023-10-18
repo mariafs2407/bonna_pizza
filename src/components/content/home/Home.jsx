@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Home = (props) =>{
+    const showAlert = localStorage.getItem('alerta') === 'true';
+
+    const handleCloseAlert = () => {
+        localStorage.setItem('alerta', 'false');
+    };
+
     return (
         <div className='content-wrapper'>
+             {showAlert && 
+                <div className="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Compra entregada</strong>
+                    <button type="button" className="close" data-dismiss="alert" aria-label="Close" 
+                    onClick={handleCloseAlert}>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
             <div className='content-header'>
                 <div className="container-fluid">
                     <div className="row mb-2">

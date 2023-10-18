@@ -49,7 +49,7 @@ const EditarProveedor = (props) => {
     const fecthProveedor = () => {
         const formData = new URLSearchParams();
         formData.append('codigo', id);
-        fetch('https://profinal-production.up.railway.app/consultar_proveedor.php', {
+        fetch('https://profinal-production-2983.up.railway.app/consultar_proveedor.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -74,7 +74,7 @@ const EditarProveedor = (props) => {
 
     //validaciones:
     const validacionForm = () => {
-        const solo_letra = /^[a-zA-Z\s]+$/;
+        const solo_numero = /^[0-9]+$/;
 
         if (!nombre === '' || !apellido === '' || !nombrecontacto === '' ||
             !cargocontacto === '' || !direccion === '' || !distrito === '' ||
@@ -102,7 +102,7 @@ const EditarProveedor = (props) => {
             })
             console.log("error")
             return false;
-        } else if (!solo_letra.test(nombre) || !solo_letra.test(apellido)) {
+        } else if (solo_numero.test(nombre) || solo_numero.test(apellido)) {
             Swal.fire({
                 icon: 'info',
                 title: 'Error de validación',

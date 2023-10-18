@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import logo from '../../../assets/AdminLTELogo.png';
 import fotoperfil from '../../../assets/avatar5.png';
 import { Link } from 'react-router-dom';
+import '../../../index';
 
 
 function Sidebar(props) {
@@ -9,7 +10,8 @@ function Sidebar(props) {
     const datos = JSON.parse(localStorage.getItem('datosUsuario'))
 
     return (
-        <aside className="main-sidebar sidebar-dark-primary elevation-4">
+
+        <aside className="main-sidebar  sidebar-dark-primary elevation-4">
             <a href="index3.html" className="brand-link">
                 <img src={logo} alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: .8 }} />
                 <span className="brand-text font-weight-light">Imagen bonna pizza</span>
@@ -41,10 +43,10 @@ function Sidebar(props) {
                     <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                         <li className="nav-item">
-                            <a href="#" className="nav-link">
+                            <Link to='/salidaProducto' className="nav-link">
                                 <i className="nav-icon fa-solid bi bi-house-door-fill pr-2"></i>
                                 <p> Inicio</p>
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item">
                             <a href="#" className="nav-link">
@@ -92,7 +94,7 @@ function Sidebar(props) {
                         </li>
 
                         <li className="nav-item">
-                            <Link to="/ingresoProducto" className="nav-link">
+                            <Link to="/compras" className="nav-link">
                                 <i class="bi bi-arrow-bar-right pr-2"></i>
                                 <p> Ingreso</p>
                             </Link>
@@ -123,6 +125,8 @@ function Sidebar(props) {
                 </nav>
             </div>
         </aside>
+
+
     );
 }
 

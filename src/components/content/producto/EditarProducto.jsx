@@ -47,7 +47,7 @@ const EditarProducto = (props) => {
         const formData = new URLSearchParams();
         formData.append('codigo', id);
 
-        fetch('https://profinal-production.up.railway.app/consultar_producto.php', {
+        fetch('https://profinal-production-2983.up.railway.app/consultar_producto.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -71,7 +71,7 @@ const EditarProducto = (props) => {
     };
 
     const fectchProveedores = () => {
-        fetch('https://profinal-production.up.railway.app/listar_proveedores.php')
+        fetch('https://profinal-production-2983.up.railway.app/listar_proveedores.php')
             .then((response) => response.json())
             .then((data) => {
                 setProveedores(data);
@@ -82,7 +82,7 @@ const EditarProducto = (props) => {
     };
 
     const fetchCategorias = () => {
-        fetch('https://profinal-production.up.railway.app/listar_categorias.php')
+        fetch('https://profinal-production-2983.up.railway.app/listar_categorias.php')
             .then((response) => response.json())
             .then((data) => {
                 setCategorias(data);
@@ -96,7 +96,6 @@ const EditarProducto = (props) => {
 
     //validaciones:
     const validacionForm = () => {
-        const solo_letra = /^[a-zA-Z\s]+$/;
         const solo_numero = /^[0-9]+$/;
 
         if (nomProducto === '' || idProveedor === '' || idCategoria === '' || U_Medida === '' || stockMinimo === '') {
@@ -115,7 +114,7 @@ const EditarProducto = (props) => {
             })
             console.log("error")
             return false;
-        } else if (!solo_letra.test(nomProducto)) {
+        } else if (solo_numero.test(nomProducto)) {
             Swal.fire({
                 icon: 'info',
                 title: 'Error de validación',
@@ -146,9 +145,9 @@ const EditarProducto = (props) => {
             formData.append('Id_prv', idProveedor);
             formData.append('Id_cat', idCategoria);
             formData.append('Uni_med', U_Medida);
+            formData.append('Stock_minimo', stockMinimo);           
             formData.append('Descontinuado', descontinuado);
-            formData.append('Est_pro', estado);
-            formData.append('Stock_minimo', stockMinimo);
+            formData.append('Est_pro', estado);            
             formData.append('Usu_Ult_Mod', usuarioActual);
 
             console.log(usuarioActual, id, nomProducto)

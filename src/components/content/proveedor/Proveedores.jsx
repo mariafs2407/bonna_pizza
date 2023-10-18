@@ -11,12 +11,13 @@ const KEYS_TO_FILTERS = ['Contacto']
 const Proveedores = (props) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
-    const elemntsPage = 10; //elementos por pagina
+    const elemntsPage = 8; //elementos por pagina
 
     const [proveedores, setProveedores] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Activo'); //FILTRADO POR ESTADO
+
     
     useEffect(() => {
         const fecthData = async () => {
@@ -37,6 +38,8 @@ const Proveedores = (props) => {
         fecthData();
     }, []);
 
+    
+
     //Actualizar campo de busqueda
     const searchUpdated = (term) => {
         setSearchTerm(term);
@@ -55,16 +58,16 @@ const Proveedores = (props) => {
     const starIndex = currentPage * elemntsPage;
     const endIndex = starIndex + elemntsPage;
     const currentProveedores = filterProveedores.slice(starIndex, endIndex);
-    
+
     let proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === "Activo");
 
     //filtrar por estado:    
-    if(estadoSeleccionado === "Todos"){
+    if (estadoSeleccionado === "Todos") {
         proveedoresEstado = currentProveedores
-    }else{
+    } else {
         proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === estadoSeleccionado);
     }
-    
+
 
     if (loading) return (
         <div className="content-wrapper d-flex justify-content-center align-items-center"
@@ -100,13 +103,13 @@ const Proveedores = (props) => {
                                             <i class="bi bi-patch-plus pr-2"></i>Nuevo Proveedor
                                         </button>
 
-                                        <div className="form-inline mr-4 mt-3">
+                                        <div className="form-inline mr-4 mt-3 ml-4">
                                             <label htmlFor="inputEstado" className='mr-3'>Seleccionar Estado :</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
                                                 id="inputEstado"
                                                 name='Estado'
-                                                className="form-control custom-select pr-4">                                                
+                                                className="form-control custom-select pr-4">
                                                 <option value="Activo">Activo</option>
                                                 <option value="Inactivo">Inactivo</option>
                                                 <option value="Todos">Todos</option>
@@ -135,28 +138,20 @@ const Proveedores = (props) => {
                                     <table className="table table-head-fixed table-hover text-nowrap" >
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Codigo</th>
                                                 <th>Nombre Completo</th>
                                                 <th>RUC</th>
                                                 <th>Contacto</th>
                                                 <th>Telefono</th>
-                                                <th>Estado</th>                                                                                               
-                                                <th>Dirección</th>                                               
+                                                <th>Estado</th>
+                                                <th>Dirección</th>
                                                 <th>Distrito</th>
-                                                <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {proveedoresEstado.map((proveedor) => (
                                                 <tr key={proveedor.Codigo}>
-                                                    <td>{proveedor.Codigo}</td>
-                                                    <td>{proveedor.Nombre_Completo}</td>
-                                                    <td>{proveedor.RUC}</td>
-                                                    <td>{proveedor.Contacto}</td>
-                                                    <td>{proveedor.Telefono}</td>
-                                                    <td>{proveedor.Estado}</td>
-                                                    <td>{proveedor.Direccion}</td>
-                                                    <td>{proveedor.Distrito}</td>
                                                     <td className="project-actions text-right">
                                                         <Link
                                                             to={`./editar/${proveedor.Codigo}`}
@@ -165,6 +160,14 @@ const Proveedores = (props) => {
                                                             Editar
                                                         </Link>
                                                     </td>
+                                                    <td>{proveedor.Codigo}</td>
+                                                    <td>{proveedor.Nombre_Completo}</td>
+                                                    <td>{proveedor.RUC}</td>
+                                                    <td>{proveedor.Contacto}</td>
+                                                    <td>{proveedor.Telefono}</td>
+                                                    <td>{proveedor.Estado}</td>
+                                                    <td>{proveedor.Direccion}</td>
+                                                    <td>{proveedor.Distrito}</td>
                                                 </tr>
                                             ))}
 
