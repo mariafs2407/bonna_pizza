@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCarrot} from '@fortawesome/free-solid-svg-icons';
+import { faCarrot } from '@fortawesome/free-solid-svg-icons';
+import NuevoProducto from './NuevoProducto';
+import EditarProducto from './EditarProducto';
 import './Productos';
 import '../../../index';
 
@@ -12,8 +13,9 @@ const KEYS_TO_FILTERS = ['Producto']
 
 const Productos = (props) => {
     const navigate = useNavigate();
+
     const [currentPage, setCurrentPage] = useState(0);
-    const elemntsPage = 10; //elementos por pagina
+    const elemntsPage = 10; //elementos por pagina    
 
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -22,6 +24,36 @@ const Productos = (props) => {
     const [descontinuadoSeleccionado, setdescontinuadoSeleccionado] = useState('Disponible'); //FILTRADO POR DESCONTINUADO
     const [categoriaSeleccionado, setCategoriaSeleccionado] = useState('Todos'); //FILTRADO POR DESCONTINUADO
     const [categorias, setCategorias] = useState([]);
+
+    //ProductoModal
+    const [productoEditando, setProductoEditando] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [NuevaProductoModalOpen, setNuevaProductoModalOpen] = useState(false);
+
+    const actualizarProductos = async () => {
+        const response = await fetch('https://profinal-production-2983.up.railway.app/listar_productos.php');
+        const data = await response.json();
+        setProductos(data);
+    }
+
+    const handleEditarProducto = (id) => {
+        setProductoEditando(id);
+        //console.log(isModalOpen);
+        setIsModalOpen(true);
+    };
+
+    const openNuevaProductoModal = () => {
+        setNuevaProductoModalOpen(true);
+    };
+
+    const closeNuevaProductoModal = () => {
+        setNuevaProductoModalOpen(false);
+        setReloadData(!reloadData)
+    };
+
+    //Recargar pagina
+    const [reloadData, setReloadData] = useState(false);
+
 
     const leerCategorias = (e) => {
         const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
@@ -53,7 +85,7 @@ const Productos = (props) => {
         };
         fecthData();
         leerCategorias();
-    }, []);
+    }, [reloadData]);
 
     //Actulizar campo de busqueda
     const searchUpdated = (term) => {
@@ -112,8 +144,8 @@ const Productos = (props) => {
                                 <div className="row">
                                     <div className="col-12 ">
                                         <button type="submit" className="btn btn-success float-left ml-4 mt-3"
-                                            onClick={() => navigate('./nuevo')}>
-                                            <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{color: "#fff",}} />
+                                            onClick={openNuevaProductoModal}>
+                                            <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{ color: "#fff", }} />
                                             Nuevo Ingrediente
                                         </button>
 
@@ -186,30 +218,27 @@ const Productos = (props) => {
                                                 <th></th>
                                                 <th>Codigo</th>
                                                 <th>Ingrediente</th>
-                                                <th>Proveedor</th>
                                                 <th>Categoria</th>
                                                 <th>Stock Minimo</th>
                                                 <th>Unidad de Medida</th>
                                                 <th>Descontinuado</th>
                                                 <th>Estado</th>
-                                                
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {productoEstado.map((producto) => (
                                                 <tr key={producto.Codigo}>
                                                     <td className="project-actions text-right">
-                                                        <Link
-                                                            to={`./editar/${producto.Codigo}`}
-                                                            className="btn btn-info btn-sm"
-                                                        >
+                                                        <button
+                                                            onClick={() => handleEditarProducto(producto.Codigo)}
+                                                            className="btn btn-info btn-sm"                                                        >
                                                             <i className="fas fa-pencil-alt pr-2"></i>
                                                             Editar
-                                                        </Link>
+                                                        </button>
                                                     </td>
                                                     <td>{producto.Codigo}</td>
                                                     <td>{producto.Producto}</td>
-                                                    <td>{producto.Proveedor}</td>
                                                     <td>{producto.Categoria}</td>
                                                     <td>{producto.StockMinimo}</td>
                                                     <td>{producto.U_Medida}</td>
@@ -248,6 +277,25 @@ const Productos = (props) => {
                     </div>
                 </div>
             </section>
+            {isModalOpen && (
+                <EditarProducto
+                    productoCodigo={productoEditando}
+                    closeModal={() => {
+                        setIsModalOpen(false);                       
+                    }}      
+                    actualizarProductos={actualizarProductos}
+                    productos={productos}
+                />
+            )}
+            {/* Modal para nueva producto */}
+            {NuevaProductoModalOpen && (
+                <NuevoProducto
+                closeModal={closeNuevaProductoModal}
+                actualizarProductos={actualizarProductos}
+                productos={productos}
+                />
+
+            )}
         </div>
     );
 }

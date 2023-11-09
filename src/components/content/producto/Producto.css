@@ -2,4 +2,8 @@
     border: none;
     outline: none;
     flex-grow: 1;
+    width: 100%;
 }
+
+.modal { background: rgba(0, 0, 0, 0.5); }
+

@@ -210,11 +210,11 @@ function NuevoProveedor(props) {
 
 
     return (
-        <div className="wrapper m-4">
+        <div className="wrapper">
             <div className="content-wrapper">
                 <section className="content-header">
                     <div className="container-fluid">
-                        <div className="row mb-2">
+                        <div className="row mb-2 mt-3 ml-2">
                             <div className="col-sm-6">
                                 <h1>Nuevo Proveedor :</h1>
                             </div>
@@ -222,7 +222,7 @@ function NuevoProveedor(props) {
                     </div>
                 </section>
 
-                <section className="content">
+                <section className="content mr-4 ml-4">
                     <form onSubmit={handleSubmit} method="post">
                         <div className=" container-fluid">
                             <div class="row">

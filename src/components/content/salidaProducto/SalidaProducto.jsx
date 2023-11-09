@@ -7,7 +7,6 @@ import "react-datepicker/dist/react-datepicker.css"; // estilos CSS
 import Modal from 'react-modal';
 
 const SalidaProducto = (props) => {
-
     const [idEmpleado, setIdEmpleado] = useState(""); // idempleado 
     const [startDate, setStartDate] = useState(new Date()); // fecha seleccionada
     const [idIngrediente, setIdIngrediente] = useState(""); // idproducto 
@@ -22,36 +21,16 @@ const SalidaProducto = (props) => {
     const [ingredienteEditado, setIngredienteEditado] = useState(""); // ingrediente que se está editando
     const [cantidadEditada, setCantidadEditada] = useState(""); // cantidad que se está editando
 
-    //nue
-
     //combo
     const [productos, setProductos] = useState([]);
     const [empleados, setEmpleados] = useState([]);
 
+    const datos = JSON.parse(localStorage.getItem("datosUsuario"));
 
-    function handleSelectChangeEmpl(event) {
-        const selectedEmpltId = event.target.value;
-        setIdEmpleado(selectedEmpltId)
-    }
     function handleSelectChangePrd(event) {
         const selectedProdId = event.target.value;
         setIdIngrediente(selectedProdId)
     }
-    const handleOrdenClick = () => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        if (idEmpleado && startDate && startDate >= today) {
-            setIsOrdenActive(true);
-            setIsIngredienteActive(true); // activa el combo de ingrediente y cantidad
-        } else {
-            Swal.fire({
-                icon: 'info',
-                title: 'Error de validación',
-                text: 'Debe seleccionar un empleado y una fecha válida (hoy o una fecha futura)',
-            });
-        }
-    };
 
     //combox
     const leerEmpleados = (e) => {
@@ -78,11 +57,9 @@ const SalidaProducto = (props) => {
 
     useEffect(() => {
         leerEmpleados();
-    }, []);
-
-    useEffect(() => {
         leerProductos();
     }, []);
+
 
     const resetForm = () => {
         setIdEmpleado("");
@@ -98,6 +75,22 @@ const SalidaProducto = (props) => {
         setCantidadEditada("");
     };
 
+    const handleOrdenClick = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (startDate && startDate >= today) {
+            setIsOrdenActive(true);
+            setIsIngredienteActive(true); // activa el combo de ingrediente y cantidad
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'Debe seleccionar un empleado y una fecha válida (hoy o una fecha futura)',
+            });
+        }
+    };
+
     //Nombre del producto seleccionado para la tabla:
     const nombreIngrediente = (idIngrediente) => {
         const nombres = {};
@@ -108,6 +101,8 @@ const SalidaProducto = (props) => {
 
         return nombres[idIngrediente] || 'Nombre no encontrado';
     };
+
+    
 
     // manejo del modal detalle orden:
     const handleIngredienteClick = () => {
@@ -201,6 +196,32 @@ const SalidaProducto = (props) => {
         }
     }
 
+    const getNombreEmpleado = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nomyape}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const getIdEmpleado = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Codigo}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    useEffect(() => {
+        if (isOrdenActive) {
+            const datos = JSON.parse(localStorage.getItem("datosUsuario"));
+            const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+            const empleadoId = getIdEmpleado(usuarioActual);
+            console.log("idEmpleado: " + empleadoId);
+            setIdEmpleado(empleadoId);
+        }
+    }, [isOrdenActive]);
+
     //Ingresar Orden y detalle de orden :
     const handleSaveChanges = async (e) => {
         e.preventDefault();
@@ -225,11 +246,13 @@ const SalidaProducto = (props) => {
         }));
 
         const fechaFormateada = formatDate(startDate);
-        const jsonDetalle = JSON.stringify(detalles);        
+        const jsonDetalle = JSON.stringify(detalles);
 
         if (validacionForm()) {
             const datos = JSON.parse(localStorage.getItem("datosUsuario"));
             const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+            console.log("idEmpleado: " + idEmpleado)
 
             const formData = new URLSearchParams();
             formData.append('idempleado', idEmpleado);
@@ -254,11 +277,11 @@ const SalidaProducto = (props) => {
                     })
                         .then((response) => response.json())
                         .then((data) => {
-                            if(data === -1){
+                            if (data === -1) {
                                 Swal.fire('Orden guardada con exito', '', 'success')
                                 resetForm()
                             }
-                            else{
+                            else {
                                 Swal.fire('Error al registrar', '', 'error')
                             }
                         })
@@ -269,7 +292,7 @@ const SalidaProducto = (props) => {
                     Swal.fire('Los cambios no se guardaron', '', 'info')
                     console.log(idEmpleado);
                     console.log(fechaFormateada);
-                    console.log(jsonDetalle);                  
+                    console.log(jsonDetalle);
                     console.log(usuarioActual);
                 }
             })
@@ -302,12 +325,11 @@ const SalidaProducto = (props) => {
                                                     className="form-control select2 select2-danger"
                                                     data-dropdown-css-className="select2-danger"
                                                     value={idEmpleado}
-                                                    onChange={(handleSelectChangeEmpl)}
+                                                    disabled={true}
                                                 >
-                                                    <option value="">Seleccionar un empleado</option>
-                                                    {empleados.map((empleado) => (
-                                                        <option key={empleado.Codigo} value={empleado.Codigo}>
-                                                            {empleado.Nomyape}
+                                                    {datos.map((item) => (
+                                                        <option key={item.Login_Usuario}>
+                                                            {getNombreEmpleado(item.Login_Usuario)}
                                                         </option>
                                                     ))}
                                                 </select>
@@ -333,7 +355,7 @@ const SalidaProducto = (props) => {
                                     </div>
                                     <div className="col-12 col-sm-4 mt-4">
                                         <button type="button" className="btn btn-primary float-right"
-                                            disabled={!idEmpleado || !startDate}
+                                            disabled={!startDate}
                                             onClick={handleOrdenClick}>
                                             <i className="fas fa-plus"></i> Agregar
                                         </button>
@@ -365,7 +387,7 @@ const SalidaProducto = (props) => {
                                                     <option value="">Seleccionar ingrediente</option>
                                                     {productos.map((producto) => (
                                                         <option key={producto.Codigo} value={producto.Codigo}>
-                                                            {producto.Producto}
+                                                            {producto.Producto} 
                                                         </option>
                                                     ))}
 
@@ -419,7 +441,7 @@ const SalidaProducto = (props) => {
                                         <tr>
                                             <th>#</th>
                                             <th>CodIngrediente</th>
-                                            <th>Ingrediente</th>
+                                            <th>Ingrediente</th>                                            
                                             <th>Cantidad</th>
                                             <th></th>
                                             <th></th>
@@ -504,6 +526,27 @@ const SalidaProducto = (props) => {
                             ) : (
                                 <p>Cargando ingredientes...</p>
                             )}
+
+                            {productos.length > 0 ? (
+                                    <div className="form-group">
+                                        <label>Ingrediente :</label>
+                                        <select
+                                            className="form-control select2 select2-danger"
+                                            data-dropdown-css-className="select2-danger"
+                                            name='Ingrediente'
+                                            value={ingredienteEditado}
+                                            disabled={true}
+                                        >
+                                            <option value="">Seleccionar ingrediente</option>
+                                            {productos.map((producto) => (
+                                                <option key={producto.Codigo} value={producto.Codigo}>
+                                                    {producto.Proveedor}
+                                                </option>
+                                            ))}
+                                        </select></div>
+                                ) : (
+                                    <p>Cargando ingredientes...</p>
+                                )}
                             <div className="form-group">
                                 <label>Cantidad:</label>
                                 <input

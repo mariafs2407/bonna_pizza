@@ -6,3 +6,6 @@
 .modal {
     z-index: 1000 !important; /* Un número alto para asegurar que el modal esté al frente */
 }
+.page-item.active .page-link{
+    z-index: 0 !important;
+}

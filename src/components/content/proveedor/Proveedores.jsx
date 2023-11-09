@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+
 import './Proveedor.css';
 import '../../../index';
 
@@ -18,6 +19,7 @@ const Proveedores = (props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Activo'); //FILTRADO POR ESTADO
 
+    
     
     useEffect(() => {
         const fecthData = async () => {
@@ -200,6 +202,8 @@ const Proveedores = (props) => {
                     </div>
                 </div>
             </section>
+            
+            
         </div>
     );
 }

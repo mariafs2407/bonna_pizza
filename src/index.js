@@ -26,7 +26,12 @@ import IngresoProducto from './components/content/ingresoProducto/IngresoProduct
 import Compra from './components/content/ingresoProducto/Compras';
 //salida de productos(orden)
 import SalidaProducto from './components/content/salidaProducto/SalidaProducto';
-
+//stock de productos
+import StockProductos from './components/content/stockProducto/StockProductos';
+//informe de ingreso y salida
+import Informe from './components/content/InformeIngresoSalida/InformeIngSal';
+//gastos
+import Gastos from './components/content/gastos/Gastos';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -57,6 +62,18 @@ root.render(
         {/* orden de productos */}
         <Route path='/salidaProducto' element={<App/>} > 
           <Route index element={<SalidaProducto/>} />  
+        </Route>
+        {/* stock de productos */}
+        <Route path='/stockProducto' element={<App/>} > 
+          <Route index element={<StockProductos/>} />  
+        </Route>
+        {/* Informe de ingreso y salida */}
+        <Route path='/informeIngSal' element={<App/>} > 
+          <Route index element={<Informe/>} />  
+        </Route>
+        {/* Gastos */}
+        <Route path='/gastos' element={<App/>} > 
+          <Route index element={<Gastos/>} />  
         </Route>
       </Route>     
       <Route path='login' element={<Login/>} /> 

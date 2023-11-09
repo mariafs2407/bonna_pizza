@@ -12,6 +12,7 @@ const IngresoProducto = () => {
     const [idEmpleado, setIdEmpleado] = useState(""); // idempleado 
     const [startDate, setStartDate] = useState(new Date()); // fecha seleccionada    
     const [idIngrediente, setIdIngrediente] = useState(""); // idproducto 
+    const [idProveedor, setIdProveedor] = useState(''); //idproveedor
     const [cantidad, setCantidad] = useState(""); // cantidad 
     const [precio, setPrecio] = useState(""); // precio 
 
@@ -22,29 +23,33 @@ const IngresoProducto = () => {
 
     const [modalIsOpen, setModalIsOpen] = useState(false); // estado para el modal
     const [ingredienteEditado, setIngredienteEditado] = useState(""); // ingrediente que se está editando
+    const [proveedorEditado, setProveedorEditado] = useState(""); //proveedor que esta siendo editado
     const [cantidadEditada, setCantidadEditada] = useState(""); // cantidad que se está editando
     const [precioEditada, setPrecioEditada] = useState(""); // precio que se está editando
 
     //combo
     const [productos, setProductos] = useState([]);
     const [empleados, setEmpleados] = useState([]);
+    const [proveedores, setProveedores] = useState([]);
 
-    function handleSelectChangeEmpl(event) {
-        const selectedEmpltId = event.target.value;
-        setIdEmpleado(selectedEmpltId)
-    }
+    const datos = JSON.parse(localStorage.getItem("datosUsuario"));
+
     function handleSelectChangePrd(event) {
         const selectedProdId = event.target.value;
         setIdIngrediente(selectedProdId)
     }
 
-    useEffect(() => {
-        leerEmpleados();
-    }, []);
+    function handleSelectChangeProv(event) {
+        const selectedProvtId = event.target.value;
+        setIdProveedor(selectedProvtId)
+    }
 
     useEffect(() => {
+        leerEmpleados();
         leerProductos();
+        leerProveedores();
     }, []);
+
 
     const leerProductos = (e) => {
         const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_productos_combo.php ";
@@ -56,6 +61,17 @@ const IngresoProducto = () => {
                 setProductos(data);
             })
     }
+
+    const leerProveedores = () => {
+        fetch('https://profinal-production-2983.up.railway.app/listar_proveedores.php')
+            .then((response) => response.json())
+            .then((data) => {
+                setProveedores(data);
+            })
+            .catch((error) => {
+                console.error('Error al obtener lista de proveedores:', error);
+            });
+    };
 
     const leerEmpleados = (e) => {
         const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_empleados.php";
@@ -79,13 +95,24 @@ const IngresoProducto = () => {
         return nombres[idIngrediente] || 'Nombre no encontrado';
     };
 
+    //Nombre del proveedor seleccionado para la tabla:
+    const nombreProveedor = (idProveedor) => {
+        const nombres = {};
+
+        proveedores.forEach((proveedor) => {
+            nombres[proveedor.Codigo] = proveedor.Contacto;
+        });
+
+        return nombres[idProveedor] || 'Nombre no encontrado';
+
+    };
 
     // manejo del modal detalle compra:
     const handleCompraClick = () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        if (idEmpleado && startDate && startDate >= today) {
+        if (startDate && startDate >= today) {
             setIsCompraActive(true);
             setIsIngredienteActive(true); // activa el combo de ingrediente y cantidad
         } else {
@@ -100,7 +127,7 @@ const IngresoProducto = () => {
     const handleIngredienteClick = () => {
         const solo_numero = /^[0-9]+$/;
 
-        if (idIngrediente && cantidad && precio && solo_numero.test(cantidad)
+        if (idIngrediente && idProveedor && cantidad && precio && solo_numero.test(cantidad)
             && parseInt(cantidad) > 0) {
             //verificar si el producto seleccionado ya exista en la tabla
             const existeIngrediente = tabla.findIndex(item => item.idIngrediente === idIngrediente);
@@ -112,10 +139,11 @@ const IngresoProducto = () => {
 
             } else {
                 // Agrega los datos a la tabla...
-                setTabla([...tabla, { idIngrediente, cantidad, precio }]);
+                setTabla([...tabla, { idIngrediente,idProveedor, cantidad, precio }]);
             }
 
             setIdIngrediente("");
+            setIdProveedor("");
             setCantidad("");
             setPrecio("");
             setIsGuardarActive(true); // activa el botón de guardar
@@ -152,9 +180,10 @@ const IngresoProducto = () => {
         })
     };
 
-    const handleEditarClick = (idIngrediente, cantidad, precio, event) => {
+    const handleEditarClick = (idIngrediente,idProveedor, cantidad, precio, event) => {
         event.preventDefault();
-        setIngredienteEditado(idIngrediente);
+        setIngredienteEditado(idIngrediente); 
+        setProveedorEditado(idProveedor);      
         setCantidadEditada(cantidad);
         setPrecioEditada(precio);
         setModalIsOpen(true);
@@ -176,7 +205,6 @@ const IngresoProducto = () => {
         setModalIsOpen(false);
     };
 
-
     //validaciones:
     const validacionForm = () => {
 
@@ -193,6 +221,32 @@ const IngresoProducto = () => {
             return true; // La validación es exitosa
         }
     }
+
+    const getNombreEmpleado = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nomyape}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const getIdEmpleado = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Codigo}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    useEffect(() => {
+        if (isCompraActive) {
+            const datos = JSON.parse(localStorage.getItem("datosUsuario"));
+            const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+            const empleadoId = getIdEmpleado(usuarioActual);
+            console.log("idEmpleado: " + empleadoId);
+            setIdEmpleado(empleadoId);
+        }
+    }, [isCompraActive]);
 
     //Ingresar Compra y detalle de compra :
     const handleSaveChanges = async (e) => {
@@ -213,6 +267,7 @@ const IngresoProducto = () => {
         //transformación de la tabla:
         const detalles = tabla.map(item => ({
             id_producto: item.idIngrediente,
+            id_proveedor: item.idProveedor,
             precio_unitario: parseFloat(item.precio),
             cantidad: parseInt(item.cantidad)
         }));
@@ -224,6 +279,8 @@ const IngresoProducto = () => {
         if (validacionForm()) {
             const datos = JSON.parse(localStorage.getItem("datosUsuario"));
             const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+            console.log("idEmpleado: " + idEmpleado)
 
             const formData = new URLSearchParams();
             formData.append('idempleado', idEmpleado);
@@ -250,7 +307,7 @@ const IngresoProducto = () => {
                         .then((response) => response.json())
                         .then((data) => {
                             if (data === -1) {
-                                Swal.fire('Orden guardada con éxito', '', 'success');
+                                Swal.fire('Compra guardada con éxito', '', 'success');
                                 navigate('/compras')
                             }
                             else {
@@ -296,18 +353,18 @@ const IngresoProducto = () => {
                                                     className="form-control select2 select2-danger"
                                                     data-dropdown-css-className="select2-danger"
                                                     value={idEmpleado}
-                                                    onChange={(handleSelectChangeEmpl)}
+                                                    disabled={true}
                                                 >
-                                                    <option value="">Seleccionar un empleado</option>
-                                                    {empleados.map((empleado) => (
-                                                        <option key={empleado.Codigo} value={empleado.Codigo}>
-                                                            {empleado.Nomyape}
+                                                    {datos.map((item) => (
+                                                        <option key={item.Login_Usuario}>
+                                                            {getNombreEmpleado(item.Login_Usuario)}
                                                         </option>
                                                     ))}
+
                                                 </select>
                                             </div>
                                         ) : (
-                                            <p>Cargando empleados...</p>
+                                            <p>Cargando Empleados...</p>
                                         )}
 
                                     </div>
@@ -329,7 +386,7 @@ const IngresoProducto = () => {
                                     <div className="col-12 col-sm-4 mt-4">
                                         <button type="button"
                                             className="btn btn-primary float-right"
-                                            disabled={!idEmpleado || !startDate}
+                                            disabled={!startDate}
                                             onClick={handleCompraClick}>
                                             <i className="fas fa-plus"></i> Agregar
                                         </button>
@@ -349,67 +406,99 @@ const IngresoProducto = () => {
                                         <i className="ion ion-clipboard mr-2"></i>
                                         Ingresar Ingrediente
                                     </h3>
-                                    <div className="col-12 col-sm-4">
-                                        {productos.length > 0 ? (
-                                            <div className="form-group">
-                                                <label>Ingrediente :</label>
-                                                <select
-                                                    className="form-control select2 select2-danger"
-                                                    data-dropdown-css-className="select2-danger"
-                                                    value={idIngrediente}
-                                                    onChange={(handleSelectChangePrd)}
-                                                    disabled={!isCompraActive}
-                                                >
-                                                    <option value="">Seleccionar ingrediente</option>
-                                                    {productos.map((producto) => (
-                                                        <option key={producto.Producto} value={producto.Codigo}>
-                                                            {producto.Producto}
-                                                        </option>
-                                                    ))}
+                                    <div className="row">
+                                        <div className="col-12 col-sm-4">
+                                            {productos.length > 0 ? (
+                                                <div className="form-group">
+                                                    <label>Ingrediente :</label>
+                                                    <select
+                                                        className="form-control select2 select2-danger"
+                                                        data-dropdown-css-className="select2-danger"
+                                                        value={idIngrediente}
+                                                        onChange={(handleSelectChangePrd)}
+                                                        disabled={!isCompraActive}
+                                                    >
+                                                        <option value="">Seleccionar ingrediente</option>
+                                                        {productos.map((producto) => (
+                                                            <option key={producto.Codigo} value={producto.Codigo}>
+                                                                {producto.Producto}
+                                                            </option>
+                                                        ))}
 
-                                                </select>
-                                            </div>
-                                        ) : (
-                                            <p>Cargando ingredientes...</p>
-                                        )}
-                                    </div>
+                                                    </select>
+                                                </div>
+                                            ) : (
+                                                <p>Cargando Ingredientes...</p>
+                                            )}
 
-                                    <div className="col-12 col-sm-4">
-                                        <label>Cantidad :</label>
-                                        <div className="input-group">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <FontAwesomeIcon icon={faBasketShopping} style={{ color: "#2c2d30", }} />
-                                                </span>
-                                            </div>
-                                            <input type="number" className="form-control float-right"
-                                                id="reservation"
-                                                value={cantidad}
-                                                onChange={(e) => setCantidad(e.target.value)}
-                                                disabled={!isCompraActive} />
+                                        </div>
+
+                                        <div className="col-12 col-sm-4">
+                                            {proveedores.length > 0 ? (
+                                                <div className="form-group">
+                                                    <label>Proveedor:</label>
+                                                    <select
+                                                        className="form-control select2 select2-danger"
+                                                        data-dropdown-css-className="select2-danger"
+                                                        value={idProveedor}
+                                                        onChange={(handleSelectChangeProv)}
+                                                        disabled={!isCompraActive}
+                                                    >
+                                                        <option value="">Seleccionar proveedor</option>
+                                                        {proveedores.map((proveedor) => (
+                                                            <option key={proveedor.Codigo} value={proveedor.Codigo}>
+                                                                {proveedor.Contacto} 
+                                                            </option>
+                                                        ))}
+
+                                                    </select>
+                                                </div>
+                                            ) : (
+                                                <p>Cargando Proveedores...</p>
+                                            )}
+
                                         </div>
                                     </div>
 
-                                    <div className="col-12 col-sm-4">
-                                        <label>Precio :</label>
-                                        <div className="input-group">
-                                            <div className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <FontAwesomeIcon icon={faMoneyBillWave} style={{ color: "#2c2d30", }} />
-                                                </span>
+                                    <div className="row">
+                                        <div className="col-12 col-sm-4">
+                                            <label>Cantidad :</label>
+                                            <div className="input-group">
+                                                <div className="input-group-prepend">
+                                                    <span className="input-group-text">
+                                                        <FontAwesomeIcon icon={faBasketShopping} style={{ color: "#2c2d30", }} />
+                                                    </span>
+                                                </div>
+                                                <input type="number" className="form-control float-right"
+                                                    id="reservation"
+                                                    value={cantidad}
+                                                    onChange={(e) => setCantidad(e.target.value)}
+                                                    disabled={!isCompraActive} />
                                             </div>
-                                            <input type="number" className="form-control float-right"
-                                                id="reservation"
-                                                value={precio}
-                                                onChange={(e) => setPrecio(e.target.value)}
-                                                disabled={!isCompraActive} />
+                                        </div>
+
+                                        <div className="col-12 col-sm-4">
+                                            <label>Precio :</label>
+                                            <div className="input-group">
+                                                <div className="input-group-prepend">
+                                                    <span className="input-group-text">
+                                                        <FontAwesomeIcon icon={faMoneyBillWave} style={{ color: "#2c2d30", }} />
+                                                    </span>
+                                                </div>
+                                                <input type="number" className="form-control float-right"
+                                                    id="reservation"
+                                                    value={precio}
+                                                    onChange={(e) => setPrecio(e.target.value)}
+                                                    disabled={!isCompraActive} />
+                                            </div>
                                         </div>
                                     </div>
+
 
                                     <div className="col-12 col-sm-12 mt-2 mb-4">
                                         <button type="button"
                                             className="btn btn-primary float-right"
-                                            disabled={!isCompraActive || !idIngrediente || !cantidad || !precio}
+                                            disabled={!isCompraActive || !idIngrediente || !idProveedor || !cantidad || !precio}
                                             onClick={handleIngredienteClick}><i className="fas fa-plus"></i> Agregar
                                         </button>
                                     </div>
@@ -432,8 +521,10 @@ const IngresoProducto = () => {
                                             <th >#</th>
                                             <th>CodIngrediente</th>
                                             <th>Ingrediente</th>
+                                            <th>Proveedor</th>
                                             <th>Cantidad</th>
                                             <th>Precio</th>
+                                            <th></th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -443,22 +534,24 @@ const IngresoProducto = () => {
                                                 <td>{index + 1}.</td>
                                                 <td>{fila.idIngrediente}</td>
                                                 <td>{nombreIngrediente(fila.idIngrediente)}</td>
+                                                <td>{nombreProveedor(fila.idProveedor)}</td>
                                                 <td>{fila.cantidad}</td>
                                                 <td>{fila.precio}</td>
+                                                <td></td>
                                                 <td>
                                                     <a className="btn btn-success"
-                                                        onClick={(event) => handleEditarClick(fila.idIngrediente, fila.cantidad, fila.precio, event)}>
+                                                        onClick={(event) => handleEditarClick(fila.idIngrediente,fila.idProveedor, fila.cantidad, fila.precio, event)}>
                                                         <FontAwesomeIcon icon={faPenToSquare} style={{ color: "#d1d1d1", }} />
                                                     </a>
 
                                                 </td>
-                                                <th>
+                                                <td>
                                                     <a className="btn btn-danger"
                                                         onClick={(event) => handleEliminarClick(index, event)}>
                                                         <FontAwesomeIcon className="fas fa-users"
                                                             icon={faTrashCan} style={{ color: "#d1d1d1", }} />
                                                     </a>
-                                                </th>
+                                                </td>
                                             </tr>))}
                                     </tbody>
                                 </table>
@@ -516,7 +609,28 @@ const IngresoProducto = () => {
                                             ))}
                                         </select></div>
                                 ) : (
-                                    <p>Cargando ingredientes...</p>
+                                    <p>Cargando Ingredientes...</p>
+                                )}
+
+                                {proveedores.length > 0 ? (
+                                    <div className="form-group">
+                                        <label>Proveedor :</label>
+                                        <select
+                                            className="form-control select2 select2-danger"
+                                            data-dropdown-css-className="select2-danger"
+                                            name='Proveedor'
+                                            value={proveedorEditado}
+                                            disabled={true}
+                                        >
+                                            <option value="">Seleccionar proveedor</option>
+                                            {proveedores.map((proveedor) => (
+                                                <option key={proveedor.Codigo} value={proveedor.Codigo}>
+                                                    {proveedor.Contacto}
+                                                </option>
+                                            ))}
+                                        </select></div>
+                                ) : (
+                                    <p>Cargando Proveedores...</p>
                                 )}
 
                                 <div className="form-group">

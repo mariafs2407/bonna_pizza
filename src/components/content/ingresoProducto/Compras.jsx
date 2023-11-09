@@ -11,21 +11,23 @@ import { faShareFromSquare } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // estilos CSS
 
-const Compras = (props) => {    
-    const [startDate, setStartDate] = useState(new Date("09/11/23"));
-    const [endDate, setendDate] = useState(new Date());
+const Compras = (props) => {
     const navigate = useNavigate();
-    const [currentPage, setCurrentPage] = useState(0);
-    const elemntsPage = 8; //elementos por pagina
+    const [startDate, setStartDate] = useState(new Date("8-09-2023"));
+    const [endDate, setendDate] = useState(new Date("11-08-2023"));
     const [loading, setLoading] = useState(true);
-
+    
+    const [currentPage, setCurrentPage] = useState(0);
+    const elemntsPage = 8; //elementos por pagina 
 
     const [modalIsOpen, setModalIsOpen] = useState(false); // estado para el modal
     const [estadoEditado, setEstadoEditado] = useState(""); // estado que se está editando
+    const [fechaLoteEditado, setFechaLoteEditado] = useState(new Date());
+    const [fechaVencimientoEditado, setFechaVencimientoEditado] = useState(new Date());
     const [compraEditada, setCompraEditada] = useState(null);
     const [compras, setCompras] = useState([]);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('reciente'); //FILTRADO POR ESTADO
-    
+
     //nuevo
     Modal.setAppElement('#root');
     const [IdCompra, setIdCompra] = useState("");
@@ -36,8 +38,10 @@ const Compras = (props) => {
 
     // Cuando cambies el estado de una compra a 'Entregado', actualiza el estado alerta en el LocalStorage:
     if (estadoEditado === 'Entregado') {
-       
+
     }
+
+    const pageCount = Math.ceil(compras.length / elemntsPage);
 
     const fecthData = async () => {
         try {
@@ -68,32 +72,24 @@ const Compras = (props) => {
     const handleGuardarCambiosClick = () => {
         setCompras(compras.map((compra) => {
             if (compra.id === compraEditada.id) {
-                return { ...compra, estado: estadoEditado };
+                return {  ...compra,
+                    estado: estadoEditado,
+                    fecha_lote: fechaLoteEditado,
+                    fecha_vencimiento: fechaVencimientoEditado
+                };
+                
             }
             return compra;
         }));
+        fecthData()
         setModalIsOpen(false);
     };
 
-    const pageCount = Math.ceil(elemntsPage);
+    
 
     const handlePageClick = ({ selected }) => {
         setCurrentPage(selected)
     };
-
-    //para filtrar por paginación:
-    const starIndex = currentPage * elemntsPage;
-    const endIndex = starIndex + elemntsPage;
-    const currentCompras = compras.slice(starIndex, endIndex);
-
-    function formatDate(date) {
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-
-        //dia/mes/año
-        return `${day}/${month}/${year}`;
-    }
 
     const handleFechaInicioChange = (fecha) => {
         setStartDate(fecha);
@@ -106,95 +102,147 @@ const Compras = (props) => {
     function convertirFecha(fecha) {
         const partes = fecha.split("/");
         return new Date(partes[2], partes[1] - 1, partes[0]);
-    }
+    };
 
     //filtrados
-    let fechasfiltradas
-    let fechasfiltradas2    
-    
-    fechasfiltradas2 = currentCompras.sort((a,b) => {
+    let fechasfiltradas2
+    let filtoentrefechas
+
+    fechasfiltradas2 = compras.sort((a, b) => {
         const fechaA = convertirFecha(a.fecha_compra);
         const fechaB = convertirFecha(b.fecha_compra)
 
-        if(estadoSeleccionado === "reciente"){
+        if (estadoSeleccionado === "reciente") {
             return fechaB - fechaA;
-        }else{
+        } else {
             return fechaA - fechaB;
         }
-    })
+    });
 
-    fechasfiltradas = fechasfiltradas2.filter((compra) => {
-        const fechaFiltrada = compra.fecha_compra;
-        return fechaFiltrada >= formatDate(startDate) && fechaFiltrada <= formatDate(endDate)
-
-    })
+    const starIndex = currentPage * elemntsPage;
+    const endIndex = starIndex + elemntsPage;
     
+    filtoentrefechas = fechasfiltradas2.filter(function(fechas){
+        return convertirFecha(fechas.fecha_compra) >= startDate && convertirFecha(fechas.fecha_compra) <= endDate
+    })
+
+    const currentCompras = filtoentrefechas.slice(starIndex, endIndex);
+
+    
+
+    const validacionForm = () => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if(fechaLoteEditado >= today){
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'La fecha del lote debe ser menor a la fecha actual',
+            })
+            console.log("error")
+            return false; // La validación falla
+        }else if(today >= fechaVencimientoEditado){
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'La fecha de vencimiento debe ser mayor a la fecha actual',
+            })
+            console.log("error")
+            return false; // La validación falla
+        }else if(estadoEditado === "Pendiente"){
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'Selección de estado no válida',
+            })
+            console.log("error")
+            return false; // La validación falla
+        }else{
+            console.log("validacion exitosa")            
+            return true; // La validación es exitosa
+        }
+    }
+
     //editar estado de compra
     const handleSaveChanges = (e) => {
         e.preventDefault();
         handleGuardarCambiosClick();
-
-        const datos = JSON.parse(localStorage.getItem("datosUsuario"));
-        const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
-        console.log(usuarioActual);
-
-        let estadoNumerico;
-        if(estadoEditado === "Pendiente"){
-            estadoNumerico = 0;
-            } else {
-                estadoNumerico = 1;
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            
+            //2023-10-15 
+            return `${year}-${month}-${day}`;
         }
 
-        const formData = new URLSearchParams();
-        formData.append("idcompra", compraEditada.IdCompra);
-        formData.append("estado_ingreso", estadoNumerico);
-        formData.append("Usu_registro", usuarioActual);
+        const fechaLoteFormateada = formatDate(fechaLoteEditado);
+        const fechaVenciFormateada = formatDate(fechaVencimientoEditado);
 
-        console.log("estado antes de enviar:", estadoNumerico);
-        console.log("IdCompra antes de enviar:", compraEditada.IdCompra);
-        console.log("usuarioActual antes de enviar:", usuarioActual);
+        if (validacionForm()) {
+            const datos = JSON.parse(localStorage.getItem("datosUsuario"));
+            const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+            console.log(compraEditada.IdCompra);
+            console.log("fechaLoteEditado : ", fechaLoteFormateada);
+            console.log("fechaVencimientoEditado : ", fechaVenciFormateada);
 
-        Swal.fire({
-            title: "¿Quieres guardar los cambios?",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Guardar",
-            denyButtonText: `Cancelar`,
-        }).then((result) => {
-
-            if (result.isConfirmed) {
-                fetch("https://profinal-production-2983.up.railway.app/update_comprarealizada_estado.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                    },
-                    body: formData,
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data === -1) {
-                            Swal.fire('Se guargo los cambios', '', 'success')
-                            fecthData();
-                            localStorage.setItem('alerta', 'true');
-                        }
-                        if (data === -2) {
-                            Swal.fire("Error al registrar");
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(
-                            "Error al guardar los cambios de compra: ",
-                            error
-                        );
-                    });
-                Swal.fire("Compra actualizada con exito", "", "success");
-                closeModal()
-            } else if (result.isDenied) {
-                Swal.fire("No se guardaron los cambios", "", "info");
-                closeModal()
+            let estadoNumerico;
+            if (estadoEditado === "Pendiente") {
+                estadoNumerico = 0;
+            } else {
+                estadoNumerico = 1;
             }
-        });
 
+            const formData = new URLSearchParams();
+            formData.append("idcompra", compraEditada.IdCompra);
+            formData.append("estado_ingreso", estadoNumerico);
+            formData.append("Usu_registro", usuarioActual);
+            formData.append("fecha_lote", fechaLoteFormateada);
+            formData.append("fecha_vencimiento", fechaVenciFormateada);
+
+            Swal.fire({
+                title: "¿Quieres guardar los cambios?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Guardar",
+                denyButtonText: `Cancelar`,
+            }).then((result) => {
+
+                if (result.isConfirmed) {                  
+
+                    fetch("https://profinal-production-2983.up.railway.app/update_comprarealizada_estado.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                        body: formData,
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data === -1) {
+                                Swal.fire('Se guargo los cambios', '', 'success')
+                                fecthData();
+                                localStorage.setItem('alerta', 'true');
+                            }
+                            if (data === -2) {
+                                Swal.fire("Error al registrar");
+                            }
+                        })
+                        .catch((error) => {
+                            console.log(
+                                "Error al guardar los cambios de compra: ",
+                                error
+                            );
+                        });
+                    Swal.fire("Compra actualizada con exito", "", "success");
+                    closeModal()
+                } else if (result.isDenied) {
+                    Swal.fire("No se guardaron los cambios", "", "info");
+                    closeModal()
+                }
+            });
+        }
     }
 
     if (loading) return (
@@ -255,22 +303,22 @@ const Compras = (props) => {
                                                 <div className="form-inline mr-4 ml-4">
                                                     <label htmlFor="inputFechaReciente" className='mr-3'>Desde:</label>
                                                     <DatePicker
-                                                        value={startDate}
+                                                        select={startDate}
                                                         className="form-control "
                                                         selected={startDate}
                                                         onChange={handleFechaInicioChange}
-                                                        dateFormat="dd/MM/yy"
+                                                        dateFormat="dd-MM-yyyy"
                                                     />
                                                 </div>
 
                                                 <div className="form-inline mr-4 ml-4">
                                                     <label htmlFor="inputFechaUltima" className='mr-3'>Hasta:</label>
                                                     <DatePicker
-                                                        value={endDate}
+                                                        select={endDate}
                                                         className="form-control "
                                                         selected={endDate}
                                                         onChange={handleFechaFinChange}
-                                                        dateFormat="dd/MM/yy"
+                                                        dateFormat="dd-MM-yyyy"
                                                     />
                                                 </div>
                                             </div>
@@ -295,7 +343,7 @@ const Compras = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {fechasfiltradas.map((compra) => (
+                                            {currentCompras.map((compra) => (
                                                 <tr key={compra.IdCompra}>
                                                     <td className="project-actions text-right">
                                                         <button
@@ -376,21 +424,38 @@ const Compras = (props) => {
                                 <label>Estado:</label>
                                 <select class="form-control select2 select2-danger"
                                     value={estadoEditado}
-                                    onChange={(e) => setEstadoEditado(e.target.value)}
+                                    onChange={(e) => setEstadoEditado(e.target.value)}                                    
                                 >
-                                    <option selected="selected">Seleccionar Estado</option>
-                                    <option>Pendiente</option>
-                                    <option>Entregado</option>
+                                    <option value='Entregado' >Entregado</option>
+                                    <option value='Pendiente' >Pendiente</option>
                                 </select>
+                            </div>
+                            <div className="form-group"
+                                style={{ display: "flex", flexDirection: "column" }}>
+                                <label>Fecha de lote:</label>
+                                <DatePicker
+                                    className="form-control "
+                                    selected={fechaLoteEditado}
+                                    onChange={(date) => setFechaLoteEditado(date)}
+                                />
+                            </div>
+                            <div className="form-group"
+                                style={{ display: "flex", flexDirection: "column" }}>
+                                <label>Fecha de vencimiento:</label>
+                                <DatePicker
+                                    className="form-control "
+                                    selected={fechaVencimientoEditado}
+                                    onChange={(date) =>  setFechaVencimientoEditado(date)}
+                                />
                             </div>
                         </form>
                     </div>
                     <div className="modal-footer">
                         <button type="submit"
-                            className="btn btn-success" 
-                            onClick= {handleSaveChanges}
-                            >
-                                Guardar Cambios</button>
+                            className="btn btn-success"
+                            onClick={handleSaveChanges}
+                        >
+                            Guardar Cambios</button>
                     </div>
                 </div>
             </Modal>
