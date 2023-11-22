@@ -1,0 +1,11 @@
+
+.table.table-head-fixed thead tr:nth-child(1) th {
+    z-index: 1 !important;
+    position: static;
+}
+.modal {
+    z-index: 1000 !important; /* Un número alto para asegurar que el modal esté al frente */
+}
+.page-item.active .page-link{
+    z-index: 0 !important;
+}

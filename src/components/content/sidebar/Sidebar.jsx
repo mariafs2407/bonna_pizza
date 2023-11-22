@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import logo from '../../../assets/AdminLTELogo.png';
+<<<<<<< HEAD
 import fotoperfil from '../../../assets/avatar5.png';
 import { Link } from 'react-router-dom';
+=======
+import logobonnapizza from '../../../assets/logo_bonapizza.jpeg';
+import fotoperfil from '../../../assets/avatar5.png';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder, faMoneyBillTrendUp,faBoxesStacked } from '@fortawesome/free-solid-svg-icons';
+import '../../../index';
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
 
 function Sidebar(props) {
@@ -9,10 +18,18 @@ function Sidebar(props) {
     const datos = JSON.parse(localStorage.getItem('datosUsuario'))
 
     return (
+<<<<<<< HEAD
         <aside className="main-sidebar sidebar-dark-primary elevation-4">
             <a href="index3.html" className="brand-link">
                 <img src={logo} alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: .8 }} />
                 <span className="brand-text font-weight-light">Imagen bonna pizza</span>
+=======
+
+        <aside className="main-sidebar  sidebar-dark-primary elevation-4">
+            <a href="#" className="brand-link text-decoration-none">
+                <img src={logobonnapizza} alt="AdminLTE Logo" className="brand-image img-circle elevation-3" style={{ opacity: .8 }} />
+                <span className="font-weight-light">BONNA PIZZA</span>
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             </a>
             <div className="sidebar">
                 <div className="user-panel mt-3 pb-3 mb-3 d-flex">
@@ -41,6 +58,7 @@ function Sidebar(props) {
                     <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                         <li className="nav-item">
+<<<<<<< HEAD
                             <a href="#" className="nav-link">
                                 <i className="nav-icon fa-solid bi bi-house-door-fill pr-2"></i>
                                 <p> Inicio</p>
@@ -51,6 +69,18 @@ function Sidebar(props) {
                                 <i className="nav-icon fa-solid bi bi-cash pr-2"></i>
                                 <p>Gastos</p>
                             </a>
+=======
+                            <Link to='/salidaProducto' className="nav-link">
+                                <i className="nav-icon fa-solid bi bi-house-door-fill pr-2"></i>
+                                <p> Inicio</p>
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link to='/gastos' className="nav-link">
+                                <FontAwesomeIcon icon={faMoneyBillTrendUp} className="pr-2" />
+                                <p>Egreso</p>
+                            </Link>
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                         </li>
                         <li className="nav-item">
                             <a href="#" className="nav-link ">
@@ -64,6 +94,7 @@ function Sidebar(props) {
                                 <p> Informe</p>
                             </a>
                             <ul className='dropdown-menu'>
+<<<<<<< HEAD
                                 <li className="nav-item">
                                     <a href="#" className="nav-link" >
                                         <i className="fa-regular fa-file-invoice-dollar nav-icon pr-2"></i>
@@ -80,6 +111,20 @@ function Sidebar(props) {
                                     <a href="#" className="nav-link">
                                         <p>Informe de Ingreso y Salida</p>
                                     </a>
+=======
+                                
+                                <li className="nav-item">
+                                    <Link to='/stockProducto' className="nav-link">
+                                        <FontAwesomeIcon icon={faBoxesStacked} className="bi pr-2" />                                       
+                                        <p>Informe de Stock</p>
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to='/informeIngSal' className="nav-link">
+                                        <FontAwesomeIcon icon={faFolder} className="bi pr-2" />
+                                        <p>Informe de Ingreso y Salida</p>
+                                    </Link>
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                 </li>
                             </ul>
                         </li>
@@ -92,7 +137,11 @@ function Sidebar(props) {
                         </li>
 
                         <li className="nav-item">
+<<<<<<< HEAD
                             <Link to="/ingresoProducto" className="nav-link">
+=======
+                            <Link to="/compras" className="nav-link">
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                 <i class="bi bi-arrow-bar-right pr-2"></i>
                                 <p> Ingreso</p>
                             </Link>
@@ -123,6 +172,11 @@ function Sidebar(props) {
                 </nav>
             </div>
         </aside>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     );
 }
 

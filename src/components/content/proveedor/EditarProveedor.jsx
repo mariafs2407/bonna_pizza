@@ -49,7 +49,11 @@ const EditarProveedor = (props) => {
     const fecthProveedor = () => {
         const formData = new URLSearchParams();
         formData.append('codigo', id);
+<<<<<<< HEAD
         fetch('https://profinal-production.up.railway.app/consultar_proveedor.php', {
+=======
+        fetch('https://profinal-production-2983.up.railway.app/consultar_proveedor.php', {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -74,7 +78,11 @@ const EditarProveedor = (props) => {
 
     //validaciones:
     const validacionForm = () => {
+<<<<<<< HEAD
         const solo_letra = /^[a-zA-Z\s]+$/;
+=======
+        const solo_numero = /^[0-9]+$/;
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
         if (!nombre === '' || !apellido === '' || !nombrecontacto === '' ||
             !cargocontacto === '' || !direccion === '' || !distrito === '' ||
@@ -102,7 +110,11 @@ const EditarProveedor = (props) => {
             })
             console.log("error")
             return false;
+<<<<<<< HEAD
         } else if (!solo_letra.test(nombre) || !solo_letra.test(apellido)) {
+=======
+        } else if (solo_numero.test(nombre) || solo_numero.test(apellido)) {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             Swal.fire({
                 icon: 'info',
                 title: 'Error de validación',
@@ -199,11 +211,19 @@ const EditarProveedor = (props) => {
     }, [proveedor])
 
     return (
+<<<<<<< HEAD
         <div className="wrapper m-4">
             <div className="content-wrapper">
                 <section className="content-header">
                     <div className="container-fluid">
                         <div className="row mb-2">
+=======
+        <div className="wrapper">
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <div className="container-fluid">
+                        <div className="row mb-2 mt-3 ml-2">
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                             <div className="col-sm-6 ">
                                 <h1>Editar Proveedor :</h1>
                             </div>
@@ -211,7 +231,11 @@ const EditarProveedor = (props) => {
                     </div>
                 </section>
 
+<<<<<<< HEAD
                 <section className="content">
+=======
+                <section className="content mr-4 ml-4">
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                     <form onSubmit={handleSaveChanges}>
                         <div className="row">
                             <div className="col-md-12">

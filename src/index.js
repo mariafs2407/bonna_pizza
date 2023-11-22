@@ -23,8 +23,20 @@ import EditarCategoria from './components/content/categoria/EditarCategoria';
 import NuevaCategoria from './components/content/categoria/NuevaCategoria';
 //ingreso de productos(compra)
 import IngresoProducto from './components/content/ingresoProducto/IngresoProducto';
+<<<<<<< HEAD
 //salida de productos(orden)
 import SalidaProducto from './components/content/salidaProducto/SalidaProducto';
+=======
+import Compra from './components/content/ingresoProducto/Compras';
+//salida de productos(orden)
+import SalidaProducto from './components/content/salidaProducto/SalidaProducto';
+//stock de productos
+import StockProductos from './components/content/stockProducto/StockProductos';
+//informe de ingreso y salida
+import Informe from './components/content/InformeIngresoSalida/InformeIngSal';
+//gastos
+import Gastos from './components/content/gastos/Gastos';
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -47,12 +59,36 @@ root.render(
           <Route path='editar/:id' element={<EditarCategoria/>} />
           <Route path='nuevo' element={<NuevaCategoria/>} />
         </Route>
+<<<<<<< HEAD
         <Route path='/ingresoProducto' element={<App/>} >
           <Route index element={<IngresoProducto/>} /> 
         </Route>
         <Route path='/salidaProducto' element={<App/>} >
           <Route index element={<SalidaProducto/>} />  
         </Route>
+=======
+        {/* compra de productos */}
+        <Route path='/compras' element={<App/>} >
+          <Route index element={<Compra/>} /> 
+          <Route path='ingresoProducto' element={<IngresoProducto/>} />
+        </Route>
+        {/* orden de productos */}
+        <Route path='/salidaProducto' element={<App/>} > 
+          <Route index element={<SalidaProducto/>} />  
+        </Route>
+        {/* stock de productos */}
+        <Route path='/stockProducto' element={<App/>} > 
+          <Route index element={<StockProductos/>} />  
+        </Route>
+        {/* Informe de ingreso y salida */}
+        <Route path='/informeIngSal' element={<App/>} > 
+          <Route index element={<Informe/>} />  
+        </Route>
+        {/* Gastos */}
+        <Route path='/gastos' element={<App/>} > 
+          <Route index element={<Gastos/>} />  
+        </Route>
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
       </Route>     
       <Route path='login' element={<Login/>} /> 
     </Routes>    

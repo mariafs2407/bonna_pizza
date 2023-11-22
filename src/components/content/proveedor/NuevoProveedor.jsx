@@ -15,10 +15,18 @@ function NuevoProveedor(props) {
     const [cargoContacto, setCargoContacto] = useState('');
     const [direccion, setDireccion] = useState('');
     const [distrito, setDistrito] = useState('');
+<<<<<<< HEAD
     const [telefono, setTelefono] = useState('');
     const [ruc, SetRuc] = useState('');
     const [rucExiste, setrucExiste] = useState([]);
     const [distritocombo, setdistritocombo] = useState([]);
+=======
+    const [telefono, setTelefono] = useState('');   
+    const [distritocombo, setdistritocombo] = useState([]);
+
+    const [ruc, SetRuc] = useState('');
+    const [rucExiste, setrucExiste] = useState([]);
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
     const opcionesCargoConacto = [
         'Gerente de ventas',
@@ -29,6 +37,7 @@ function NuevoProveedor(props) {
 
     useEffect(() => {
         leerDistritos();
+<<<<<<< HEAD
     }, []);    
 
     useEffect(() => {
@@ -37,6 +46,39 @@ function NuevoProveedor(props) {
 
     
     const validarRUC = () =>{
+=======
+    }, []);
+
+    useEffect(() => {
+       validarRUCBD();
+    }, []);
+
+   /* const validarRucAPI = async () => {
+        try {
+            const FormData = new URLSearchParams();
+            FormData.append("vruc", ruc)
+            const apiUrl = `https://profinal-production-2983.up.railway.app/ruc_existe.php`;
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: new Headers({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }),
+                body: FormData
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setrucExiste(data);
+                    console.log(rucExiste);
+                })
+        } catch (error) {
+            console.error('Ruc ingresado no es válido', error);
+
+        }
+    }*/
+
+    const validarRUCBD = () => {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
         const FormData = new URLSearchParams();
         FormData.append("vruc", ruc)
 
@@ -47,11 +89,19 @@ function NuevoProveedor(props) {
             }),
             body: FormData
         })
+<<<<<<< HEAD
         .then((response) => response.json())
         .then((data) => {
             setrucExiste(data);
             console.log(rucExiste);
         })
+=======
+            .then((response) => response.json())
+            .then((data) => {
+                setrucExiste(data);
+                console.log(rucExiste);
+            })
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     }
 
     const leerDistritos = () => {
@@ -65,11 +115,20 @@ function NuevoProveedor(props) {
             });
     };
 
+<<<<<<< HEAD
     
 
     //validaciones:
     const validacionForm = () => {
         const solo_letra = /^[a-zA-Z\s]+$/;
+=======
+
+
+    //validaciones:
+    const validacionForm = async () => {
+        const solo_numero = /^[0-9]+$/;
+        const rucEmpiezaEn10o20 = /^(10|20)\d{9}$/;
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
         if (!nombre === '' || !apellido === '' || !nombreContacto === '' ||
             !cargoContacto === '' || !direccion === '' || !distrito === '' ||
@@ -82,6 +141,17 @@ function NuevoProveedor(props) {
             })
             console.log("error")
             return false;
+<<<<<<< HEAD
+=======
+        }else if (!ruc.match(rucEmpiezaEn10o20)) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Error de validación',
+                text: 'El campo RUC debe comenzar con 10 o 20 y tener 11 digitos',
+            })
+            console.log("error")
+            return false;
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
         } else if (ruc.length !== 11) {
             Swal.fire({
                 icon: 'info',
@@ -98,7 +168,11 @@ function NuevoProveedor(props) {
             })
             console.log("error")
             return false;
+<<<<<<< HEAD
         } else if (!solo_letra.test(nombre) || !solo_letra.test(apellido)) {
+=======
+        } else if (solo_numero.test(nombre) || solo_numero.test(apellido)) {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             Swal.fire({
                 icon: 'info',
                 title: 'Error de validación',
@@ -106,6 +180,7 @@ function NuevoProveedor(props) {
             })
             console.log("error")
             return false;
+<<<<<<< HEAD
         }
         else if (rucExiste === -1) {
             Swal.fire({
@@ -116,6 +191,9 @@ function NuevoProveedor(props) {
             return false;
         }
         else {
+=======
+        } else {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             console.log("validacion exitosa")
             return true;
         }
@@ -123,9 +201,17 @@ function NuevoProveedor(props) {
 
 
     const handleSubmit = async (e) => {
+<<<<<<< HEAD
         
         e.preventDefault();        
         if (validacionForm()) {
+=======
+        e.preventDefault();
+
+        const esValido = await validacionForm();
+
+        if (esValido) {
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
             const datos = JSON.parse(localStorage.getItem('datosUsuario'));
             console.log(datos)
@@ -165,7 +251,11 @@ function NuevoProveedor(props) {
                                 navigate('/proveedores')
                             }
                             if (data === -2) {
+<<<<<<< HEAD
                                 Swal.fire("Error al registrar",'','error');
+=======
+                                Swal.fire("Error al registrar", '', 'error');
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                             }
                         })
                         .catch((error) => {
@@ -184,11 +274,19 @@ function NuevoProveedor(props) {
 
 
     return (
+<<<<<<< HEAD
         <div className="wrapper m-4">
             <div className="content-wrapper">
                 <section className="content-header">
                     <div className="container-fluid">
                         <div className="row mb-2">
+=======
+        <div className="wrapper">
+            <div className="content-wrapper">
+                <section className="content-header">
+                    <div className="container-fluid">
+                        <div className="row mb-2 mt-3 ml-2">
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                             <div className="col-sm-6">
                                 <h1>Nuevo Proveedor :</h1>
                             </div>
@@ -196,8 +294,13 @@ function NuevoProveedor(props) {
                     </div>
                 </section>
 
+<<<<<<< HEAD
                 <section className="content">
                     <form onSubmit={handleSubmit}  method="post">
+=======
+                <section className="content mr-4 ml-4">
+                    <form onSubmit={handleSubmit} method="post">
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                         <div className=" container-fluid">
                             <div class="row">
                                 <div className="col-12">
@@ -234,12 +337,22 @@ function NuevoProveedor(props) {
                                                     <div className="form-group">
                                                         <label htmlFor="inputRuc">Ruc</label>
                                                         <input type="text"
+<<<<<<< HEAD
                                                             value={ruc}                                                            
                                                             onChange={(e) => {                                                                
                                                                 const val = e.target.value;
                                                                 if (/^\d*$/.test(val) && val.length <= 11) {
                                                                     SetRuc(val);                                                                    
                                                                 }                                                                
+=======
+                                                            value={ruc}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value;
+                                                                if (/^\d*$/.test(val) && val.length <= 11) {
+                                                                    SetRuc(val);
+                                                                    
+                                                                }
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                             }}
                                                             id="inputRuc" className="form-control"
                                                             placeholder="Numero de RUC"
@@ -304,6 +417,7 @@ function NuevoProveedor(props) {
                                                 </div>
                                                 <div className="col-md-6">
                                                     <div className="form-group">
+<<<<<<< HEAD
                                                     <label htmlFor="inputDistrito">Distrito</label>
                                                     <select class="form-control custom-select"
                                                         value={distrito}
@@ -317,6 +431,21 @@ function NuevoProveedor(props) {
                                                             </option>
                                                         ))}
                                                     </select>    
+=======
+                                                        <label htmlFor="inputDistrito">Distrito</label>
+                                                        <select class="form-control custom-select"
+                                                            value={distrito}
+                                                            onChange={(e) => setDistrito(e.target.value)}
+                                                            id="inputCargoContacto"
+                                                            data-placeholder="Seleccione una opcion">
+                                                            <option value="">Seleccionar un distrito</option>
+                                                            {distritocombo.map((item) => (
+                                                                <option key={item.id} value={item.nombre}>
+                                                                    {item.nombre}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                     </div>
                                                 </div>
                                             </div>

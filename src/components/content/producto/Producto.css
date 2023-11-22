@@ -2,4 +2,12 @@
     border: none;
     outline: none;
     flex-grow: 1;
+<<<<<<< HEAD
 }
+=======
+    width: 100%;
+}
+
+.modal { background: rgba(0, 0, 0, 0.5); }
+
+>>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
