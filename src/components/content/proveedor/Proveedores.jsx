@@ -3,10 +3,6 @@ import { Link } from 'react-router-dom';
 import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
-<<<<<<< HEAD
-=======
-
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 import './Proveedor.css';
 import '../../../index';
 
@@ -15,21 +11,14 @@ const KEYS_TO_FILTERS = ['Contacto']
 const Proveedores = (props) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
-<<<<<<< HEAD
-    const elemntsPage = 10; //elementos por pagina
-=======
     const elemntsPage = 8; //elementos por pagina
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
     const [proveedores, setProveedores] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Activo'); //FILTRADO POR ESTADO
-<<<<<<< HEAD
-=======
 
     
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     
     useEffect(() => {
         const fecthData = async () => {
@@ -50,11 +39,8 @@ const Proveedores = (props) => {
         fecthData();
     }, []);
 
-<<<<<<< HEAD
-=======
     
 
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     //Actualizar campo de busqueda
     const searchUpdated = (term) => {
         setSearchTerm(term);
@@ -73,18 +59,6 @@ const Proveedores = (props) => {
     const starIndex = currentPage * elemntsPage;
     const endIndex = starIndex + elemntsPage;
     const currentProveedores = filterProveedores.slice(starIndex, endIndex);
-<<<<<<< HEAD
-    
-    let proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === "Activo");
-
-    //filtrar por estado:    
-    if(estadoSeleccionado === "Todos"){
-        proveedoresEstado = currentProveedores
-    }else{
-        proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === estadoSeleccionado);
-    }
-    
-=======
 
     let proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === "Activo");
 
@@ -95,7 +69,6 @@ const Proveedores = (props) => {
         proveedoresEstado = currentProveedores.filter(proveedor => proveedor.Estado === estadoSeleccionado);
     }
 
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
     if (loading) return (
         <div className="content-wrapper d-flex justify-content-center align-items-center"
@@ -131,21 +104,13 @@ const Proveedores = (props) => {
                                             <i class="bi bi-patch-plus pr-2"></i>Nuevo Proveedor
                                         </button>
 
-<<<<<<< HEAD
-                                        <div className="form-inline mr-4 mt-3">
-=======
                                         <div className="form-inline mr-4 mt-3 ml-4">
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                             <label htmlFor="inputEstado" className='mr-3'>Seleccionar Estado :</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
                                                 id="inputEstado"
                                                 name='Estado'
-<<<<<<< HEAD
-                                                className="form-control custom-select pr-4">                                                
-=======
                                                 className="form-control custom-select pr-4">
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                 <option value="Activo">Activo</option>
                                                 <option value="Inactivo">Inactivo</option>
                                                 <option value="Todos">Todos</option>
@@ -174,41 +139,20 @@ const Proveedores = (props) => {
                                     <table className="table table-head-fixed table-hover text-nowrap" >
                                         <thead>
                                             <tr>
-<<<<<<< HEAD
-=======
                                                 <th></th>
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                 <th>Codigo</th>
                                                 <th>Nombre Completo</th>
                                                 <th>RUC</th>
                                                 <th>Contacto</th>
                                                 <th>Telefono</th>
-<<<<<<< HEAD
-                                                <th>Estado</th>                                                                                               
-                                                <th>Dirección</th>                                               
-                                                <th>Distrito</th>
-                                                <th>Acciones</th>
-=======
                                                 <th>Estado</th>
                                                 <th>Dirección</th>
                                                 <th>Distrito</th>
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {proveedoresEstado.map((proveedor) => (
                                                 <tr key={proveedor.Codigo}>
-<<<<<<< HEAD
-                                                    <td>{proveedor.Codigo}</td>
-                                                    <td>{proveedor.Nombre_Completo}</td>
-                                                    <td>{proveedor.RUC}</td>
-                                                    <td>{proveedor.Contacto}</td>
-                                                    <td>{proveedor.Telefono}</td>
-                                                    <td>{proveedor.Estado}</td>
-                                                    <td>{proveedor.Direccion}</td>
-                                                    <td>{proveedor.Distrito}</td>
-=======
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                     <td className="project-actions text-right">
                                                         <Link
                                                             to={`./editar/${proveedor.Codigo}`}
@@ -217,8 +161,6 @@ const Proveedores = (props) => {
                                                             Editar
                                                         </Link>
                                                     </td>
-<<<<<<< HEAD
-=======
                                                     <td>{proveedor.Codigo}</td>
                                                     <td>{proveedor.Nombre_Completo}</td>
                                                     <td>{proveedor.RUC}</td>
@@ -227,7 +169,6 @@ const Proveedores = (props) => {
                                                     <td>{proveedor.Estado}</td>
                                                     <td>{proveedor.Direccion}</td>
                                                     <td>{proveedor.Distrito}</td>
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
                                                 </tr>
                                             ))}
 
@@ -260,11 +201,8 @@ const Proveedores = (props) => {
                     </div>
                 </div>
             </section>
-<<<<<<< HEAD
-=======
             
             
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
         </div>
     );
 }

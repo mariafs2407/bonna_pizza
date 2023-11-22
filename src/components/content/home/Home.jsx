@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-
-const Home = (props) =>{
-    return (
-        <div className='content-wrapper'>
-=======
 import React, { useState } from 'react';
 
 const Home = (props) =>{
@@ -25,7 +18,6 @@ const Home = (props) =>{
                     </button>
                 </div>
             }
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
             <div className='content-header'>
                 <div className="container-fluid">
                     <div className="row mb-2">

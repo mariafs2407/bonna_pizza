@@ -3,24 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
-=======
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-regular-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.0",
-<<<<<<< HEAD
-    "bootstrap": "^5.3.2",
-    "bootstrap-icons": "^1.11.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-=======
     "babel-plugin-macros": "^3.1.0",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.0",
@@ -32,21 +23,15 @@
     "react-datepicker": "^4.20.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
     "react-paginate": "^8.2.0",
     "react-router-dom": "^6.15.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-search-input": "^0.11.3",
-<<<<<<< HEAD
-    "sweetalert2-react-content": "^5.0.7",
-    "web-vitals": "^2.1.4"
-=======
     "react-to-pdf": "^1.0.1",
     "react-to-print": "^2.14.15",
     "sweetalert2-react-content": "^5.0.7",
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
   },
   "scripts": {
     "start": "react-scripts start",
@@ -71,12 +56,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-<<<<<<< HEAD
-=======
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15"
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
   }
 }

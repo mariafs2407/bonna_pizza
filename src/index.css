@@ -5,16 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-<<<<<<< HEAD
-}
-
-=======
   background-color: #f4f6f9;
 }
 html,body{
   height: 100%;
 }
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -24,14 +19,11 @@ code {
   width: 98%;
 }
 
-<<<<<<< HEAD
-=======
 .custom-search input {
   border: none;
   outline: none;
   flex-grow: 1;
   width: 100%;
 }
->>>>>>> 2a5a3431bd016962a35e892ea4a9c34a6abe5faf
 
 
