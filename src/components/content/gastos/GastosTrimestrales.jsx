@@ -13,7 +13,7 @@ const GastosTrimestrales = (props) => {
     const [anios, setAnios] = useState([]);
 
     const fetchYears = async () => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_gastosa%C3%B1o.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_gastosa%C3%B1o.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -30,7 +30,7 @@ const GastosTrimestrales = (props) => {
             console.log(idAnio);
 
             const response = await fetch(
-                "https://profinal-production-2983.up.railway.app/consultar_gastostrimestre.php",
+                "https://profinal-production.up.railway.app/consultar_gastostrimestre.php",
                 {
                     method: 'POST',
                     body: formData

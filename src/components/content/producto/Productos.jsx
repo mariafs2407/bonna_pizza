@@ -3,7 +3,7 @@ import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCarrot } from '@fortawesome/free-solid-svg-icons';
+import { faCarrot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import NuevoProducto from './NuevoProducto';
 import EditarProducto from './EditarProducto';
 import './Productos';
@@ -24,6 +24,53 @@ const Productos = (props) => {
     const [descontinuadoSeleccionado, setdescontinuadoSeleccionado] = useState('Disponible'); //FILTRADO POR DESCONTINUADO
     const [categoriaSeleccionado, setCategoriaSeleccionado] = useState('Todos'); //FILTRADO POR DESCONTINUADO
     const [categorias, setCategorias] = useState([]);
+    const [empleados, setEmpleados] = useState([]);
+
+    const datos = JSON.parse(localStorage.getItem('datosUsuario'));
+
+    const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+    var nuevoproducto = "";
+    var editarproducto = "";
+
+    const leerEmpleados = (e) => {
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_usuarios.php";
+        fetch(rutaServicio)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setEmpleados(data);
+            })
+    }
+    useEffect(() => {
+        leerEmpleados();        
+    }, []);
+
+    const getNivel = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nivel}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const nivelusuario = getNivel(usuarioActual); 
+
+    const limitarfuncion = (nivel) => {
+        if (nivel === 'Empleado') {
+            nuevoproducto = "none";
+            editarproducto = "none";
+        }else if(nivel === 'Gerente'){
+            nuevoproducto = "none";
+            editarproducto = "none";
+        }else if(nivel === 'Gestor de operaciones'){
+            nuevoproducto = "";
+            editarproducto = "";
+        }
+    };
+
+    limitarfuncion(nivelusuario);
 
     //ProductoModal
     const [productoEditando, setProductoEditando] = useState(null);
@@ -31,7 +78,7 @@ const Productos = (props) => {
     const [NuevaProductoModalOpen, setNuevaProductoModalOpen] = useState(false);
 
     const actualizarProductos = async () => {
-        const response = await fetch('https://profinal-production-2983.up.railway.app/listar_productos.php');
+        const response = await fetch('https://profinal-production.up.railway.app/listar_productos.php');
         const data = await response.json();
         setProductos(data);
     }
@@ -56,7 +103,7 @@ const Productos = (props) => {
 
 
     const leerCategorias = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_categorias.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -69,7 +116,7 @@ const Productos = (props) => {
     useEffect(() => {
         const fecthData = async () => {
             try {
-                const response = await fetch('https://profinal-production-2983.up.railway.app/listar_productos.php');
+                const response = await fetch('https://profinal-production.up.railway.app/listar_productos.php');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -144,7 +191,7 @@ const Productos = (props) => {
                                 <div className="row">
                                     <div className="col-12 ">
                                         <button type="submit" className="btn btn-success float-left ml-4 mt-3"
-                                            onClick={openNuevaProductoModal}>
+                                            onClick={openNuevaProductoModal} style={{display: nuevoproducto}}>
                                             <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{ color: "#fff", }} />
                                             Nuevo Ingrediente
                                         </button>
@@ -159,7 +206,7 @@ const Productos = (props) => {
                                                 />
                                                 <div className="input-group-append">
                                                     <button className="btn btn-outline-secondary" >
-                                                        <i className="fas fa-search fa-fw"></i>
+                                                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -230,7 +277,7 @@ const Productos = (props) => {
                                             {productoEstado.map((producto) => (
                                                 <tr key={producto.Codigo}>
                                                     <td className="project-actions text-right">
-                                                        <button
+                                                        <button style={{display: editarproducto}}
                                                             onClick={() => handleEditarProducto(producto.Codigo)}
                                                             className="btn btn-info btn-sm"                                                        >
                                                             <i className="fas fa-pencil-alt pr-2"></i>
@@ -281,8 +328,8 @@ const Productos = (props) => {
                 <EditarProducto
                     productoCodigo={productoEditando}
                     closeModal={() => {
-                        setIsModalOpen(false);                       
-                    }}      
+                        setIsModalOpen(false);
+                    }}
                     actualizarProductos={actualizarProductos}
                     productos={productos}
                 />
@@ -290,9 +337,9 @@ const Productos = (props) => {
             {/* Modal para nueva producto */}
             {NuevaProductoModalOpen && (
                 <NuevoProducto
-                closeModal={closeNuevaProductoModal}
-                actualizarProductos={actualizarProductos}
-                productos={productos}
+                    closeModal={closeNuevaProductoModal}
+                    actualizarProductos={actualizarProductos}
+                    productos={productos}
                 />
 
             )}

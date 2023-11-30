@@ -60,7 +60,7 @@ const NuevaCategoria = ({ closeModal }) => {
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    fetch("https://profinal-production-2983.up.railway.app/insert_categoria.php", {
+                    fetch("https://profinal-production.up.railway.app/insert_categoria.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded",

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import MapView from '../usuarios/MapView';
+import Modal from 'react-modal';
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -21,6 +23,38 @@ function NuevoProveedor(props) {
     const [ruc, SetRuc] = useState('');
     const [rucExiste, setrucExiste] = useState([]);
 
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    Modal.setAppElement('#root');
+
+    const handleOpenMap = () => {
+        setIsMapOpen(true);
+    };
+
+    const handleCloseMap = () => {
+        setIsMapOpen(false);
+        console.log(isMapOpen)
+    };
+
+    const handleMapClick = (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDIPkzk4HFDFDh6luCvOUEPzp1F6pXhxaY`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.results[0].address_components);
+                const addressComponents = data.results[0].address_components;
+                const districtComponent = addressComponents.find(component => component.types.includes('administrative_area_level_2'));
+                const district = districtComponent ? districtComponent.long_name : '';
+                setDireccion(data.results[0].formatted_address);
+                setDistrito(district);
+            })
+            .catch(error => console.error(error));
+
+        handleCloseMap();
+    };
+
     const opcionesCargoConacto = [
         'Gerente de ventas',
         'Asesor de ventas',
@@ -40,7 +74,7 @@ function NuevoProveedor(props) {
         try {
             const FormData = new URLSearchParams();
             FormData.append("vruc", ruc)
-            const apiUrl = `https://profinal-production-2983.up.railway.app/ruc_existe.php`;
+            const apiUrl = `https://profinal-production.up.railway.app/ruc_existe.php`;
 
             fetch(apiUrl, {
                 method: 'POST',
@@ -64,7 +98,7 @@ function NuevoProveedor(props) {
         const FormData = new URLSearchParams();
         FormData.append("vruc", ruc)
 
-        fetch("https://profinal-production-2983.up.railway.app/validar_ruc.php", {
+        fetch("https://profinal-production.up.railway.app/validar_ruc.php", {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -178,7 +212,7 @@ function NuevoProveedor(props) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/insert_proveedor.php', {
+                    fetch('https://profinal-production.up.railway.app/insert_proveedor.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -326,7 +360,12 @@ function NuevoProveedor(props) {
                                                 <div className="col-md-6">
                                                     <div className="form-group">
                                                         <label htmlFor="inputDireccion">Direccion</label>
-                                                        <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} id="inputDireccion" className="form-control" placeholder="Direccion" />
+                                                        <input type="text" value={direccion} 
+                                                        onChange={(e) => setDireccion(e.target.value)}
+                                                        onClick={handleOpenMap} 
+                                                        id="inputDireccion" 
+                                                        className="form-control" 
+                                                        placeholder="Direccion" />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-6">
@@ -365,6 +404,29 @@ function NuevoProveedor(props) {
                     </form>
                 </section>
             </div>
+
+            <Modal
+                isOpen={isMapOpen}
+                onRequestClose={handleCloseMap}
+                contentLabel="Mapa"
+                style={{
+                    content: {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '50%',
+                        marginLeft: '10%',
+
+                        transform: 'translate(-50%, -50%)',
+                        width: '60%',
+                        height: '60%',
+                    },
+                }}
+            >
+                <MapView onMapClick={handleMapClick} />
+            </Modal>
         </div>
     );
 }

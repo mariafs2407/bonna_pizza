@@ -37,7 +37,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
         const formData = new URLSearchParams();
         formData.append('codigo', productoCodigo);
 
-        fetch('https://profinal-production-2983.up.railway.app/consultar_producto.php', {
+        fetch('https://profinal-production.up.railway.app/consultar_producto.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,7 +67,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
     };
 
     const fetchCategorias = () => {
-        fetch('https://profinal-production-2983.up.railway.app/listar_categorias.php')
+        fetch('https://profinal-production.up.railway.app/listar_categorias.php')
             .then((response) => response.json())
             .then((data) => {
                 setCategorias(data);
@@ -165,7 +165,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                 }).then((result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        fetch('https://profinal-production-2983.up.railway.app/update_producto.php', {
+                        fetch('https://profinal-production.up.railway.app/update_producto.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',

@@ -45,7 +45,7 @@ const Compras = (props) => {
 
     const fecthData = async () => {
         try {
-            const response = await fetch('https://profinal-production-2983.up.railway.app/listar_comprasrealizadas.php');
+            const response = await fetch('https://profinal-production.up.railway.app/listar_comprasrealizadas.php');
             if (!response.ok) {
                 throw new Error('Error en la solicitud');
             }
@@ -211,7 +211,7 @@ const Compras = (props) => {
 
                 if (result.isConfirmed) {                  
 
-                    fetch("https://profinal-production-2983.up.railway.app/update_comprarealizada_estado.php", {
+                    fetch("https://profinal-production.up.railway.app/update_comprarealizada_estado.php", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/x-www-form-urlencoded",

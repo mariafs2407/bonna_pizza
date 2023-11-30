@@ -23,8 +23,54 @@ const Categorias = (props) => {
 
     const [NuevaCategoriaModalOpen, setNuevaCategoriaModalOpen] = useState(false);
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Activo'); //FILTRADO POR ESTADO
-    
-    
+
+    const [empleados, setEmpleados] = useState([]);
+
+    const datos = JSON.parse(localStorage.getItem('datosUsuario'));
+
+    const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+    var nuevacategoria = "";
+    var editarcategoria = "";
+
+    const leerEmpleados = (e) => {
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_usuarios.php";
+        fetch(rutaServicio)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setEmpleados(data);
+            })
+    }
+    useEffect(() => {
+        leerEmpleados();
+    }, []);
+
+    const getNivel = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nivel}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const nivelusuario = getNivel(usuarioActual);
+
+    const limitarfuncion = (nivel) => {
+        if (nivel === 'Empleado') {
+            nuevacategoria = "none";
+            editarcategoria = "none";
+        }else if(nivel === 'Gerente'){
+            nuevacategoria = "none";
+            editarcategoria = "none";
+        }else if(nivel === 'Gestor de operaciones'){
+            nuevacategoria = "";
+            editarcategoria = "";
+        }
+    };
+
+    limitarfuncion(nivelusuario);
 
     const handleEditarCategoria = (categoria) => {
         setCategoriaEditando(categoria);
@@ -41,7 +87,7 @@ const Categorias = (props) => {
         setReloadData(!reloadData)
     };
 
-    
+
 
     //Recargar pagina
     const [reloadData, setReloadData] = useState(false);
@@ -49,7 +95,7 @@ const Categorias = (props) => {
     const fetchData = async () => {
         try {
             const response = await fetch(
-                "https://profinal-production-2983.up.railway.app/listar_categorias.php"
+                "https://profinal-production.up.railway.app/listar_categorias.php"
             );
             if (!response.ok) {
                 throw new Error("Error en la solicitud");
@@ -90,13 +136,13 @@ const Categorias = (props) => {
     const endIndex = starIndex + elemntsPage;
     const currentCategorias = filterCategorias.slice(starIndex, endIndex);
 
-    
+
     let categoriasEstado = currentCategorias.filter(categoria => categoria.estado === "Activo");
 
     //filtrar por estado:    
-    if(estadoSeleccionado === "Todos"){
+    if (estadoSeleccionado === "Todos") {
         categoriasEstado = currentCategorias
-    }else{
+    } else {
         categoriasEstado = currentCategorias.filter(categoria => categoria.estado === estadoSeleccionado);
     }
 
@@ -139,19 +185,20 @@ const Categorias = (props) => {
                                     <div className="col-12 d-flex align-items-center justify-content-between">
                                         <button
                                             type="submit"
+                                            style={{ display: nuevacategoria }}
                                             className="btn btn-success float-left ml-4 mt-3"
                                             onClick={openNuevaCategoriaModal}
                                         ><i class="bi bi-patch-plus pr-2"></i>
                                             Nueva Categoria
                                         </button>
 
-                                        <div className="form-inline mr-4 mt-3">
+                                        <div className="form-inline mr-4 mt-3 ml-4">
                                             <label htmlFor="inputEstado" className='mr-3'>Seleccionar Estado :</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
                                                 id="inputEstado"
                                                 name='Estado'
-                                                className="form-control custom-select pr-4">                                                
+                                                className="form-control custom-select pr-4">
                                                 <option value="Activo">Activo</option>
                                                 <option value="Inactivo">Inactivo</option>
                                                 <option value="Todos">Todos</option>
@@ -179,7 +226,7 @@ const Categorias = (props) => {
                                 <div className="card-body">
                                     <table
                                         id="example1"
-                                        className="table table-bordered table-striped"
+                                        className="table table-head-fixed table-hover text-nowrap"
                                     >
                                         <thead>
                                             <tr>
@@ -188,24 +235,24 @@ const Categorias = (props) => {
                                                 <th>Nombre</th>
                                                 <th>Descripcion</th>
                                                 <th>Estado</th>
-                                                
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {categoriasEstado.map((categoria) => (
                                                 <tr key={categoria.Id_Cat}>
                                                     <td className="project-actions text-right">
-                                                    <button
-                                                    onClick={() => handleEditarCategoria(categoria)}
-                                                    className="btn btn-info btn-sm"                                                        >
-                                                    <i className="fas fa-pencil-alt pr-2"></i>
-                                                    Editar
+                                                    <button style={{ display: editarcategoria }}
+                                                            onClick={() => handleEditarCategoria(categoria)}
+                                                            className="btn btn-info btn-sm"                                                        >
+                                                            <i className="fas fa-pencil-alt pr-2"></i>
+                                                            Editar
                                                     </button>
                                                     </td>
                                                     <td>{categoria.Id_Cat}</td>
                                                     <td>{categoria.nombre}</td>
                                                     <td>{categoria.Des_Cat}</td>
-                                                    <td>{categoria.estado}</td>                                                    
+                                                    <td>{categoria.estado}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

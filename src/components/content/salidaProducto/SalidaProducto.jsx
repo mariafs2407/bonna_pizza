@@ -34,7 +34,7 @@ const SalidaProducto = (props) => {
 
     //combox
     const leerEmpleados = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_empleados.php ";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_empleados.php ";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -45,7 +45,7 @@ const SalidaProducto = (props) => {
     }
 
     const leerProductos = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_productos_combo.php ";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_productos_combo.php ";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -268,7 +268,7 @@ const SalidaProducto = (props) => {
                 denyButtonText: `Cancelar`,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/insert_ordencondetalle2.php', {
+                    fetch('https://profinal-production.up.railway.app/insert_ordencondetalle2.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',

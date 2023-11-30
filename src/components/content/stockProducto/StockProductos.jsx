@@ -16,7 +16,7 @@ const StockProductos = (props) => {
     }, []);
 
     const leerProductos = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_productos_combo.php ";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_productos_combo.php ";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -34,7 +34,7 @@ const StockProductos = (props) => {
         console.log(idIngrediente);
 
 
-        fetch('https://profinal-production-2983.up.railway.app/consultar_productos_stockactual.php', {
+        fetch('https://profinal-production.up.railway.app/consultar_productos_stockactual.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

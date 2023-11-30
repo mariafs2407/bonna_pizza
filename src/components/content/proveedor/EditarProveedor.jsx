@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
+import MapView from '../usuarios/MapView';
+import Modal from 'react-modal';
 
 const EditarProveedor = (props) => {
     const navigate = useNavigate();
@@ -22,6 +24,38 @@ const EditarProveedor = (props) => {
     const [telefono, setTelefono] = useState('');
     const [ruc, setRuc] = useState('');
     const [distritocombo, setdistritocombo] = useState([]);
+
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    Modal.setAppElement('#root');
+
+    const handleOpenMap = () => {
+        setIsMapOpen(true);
+    };
+
+    const handleCloseMap = () => {
+        setIsMapOpen(false);
+        console.log(isMapOpen)
+    };
+
+    const handleMapClick = (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDIPkzk4HFDFDh6luCvOUEPzp1F6pXhxaY`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.results[0].address_components);
+                const addressComponents = data.results[0].address_components;
+                const districtComponent = addressComponents.find(component => component.types.includes('administrative_area_level_2'));
+                const district = districtComponent ? districtComponent.long_name : '';
+                setDireccion(data.results[0].formatted_address);
+                setDistrito(district);
+            })
+            .catch(error => console.error(error));
+
+        handleCloseMap();
+    };
 
     const opcionesCargoConacto = [
         'Gerente de ventas',
@@ -49,7 +83,7 @@ const EditarProveedor = (props) => {
     const fecthProveedor = () => {
         const formData = new URLSearchParams();
         formData.append('codigo', id);
-        fetch('https://profinal-production-2983.up.railway.app/consultar_proveedor.php', {
+        fetch('https://profinal-production.up.railway.app/consultar_proveedor.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -149,7 +183,7 @@ const EditarProveedor = (props) => {
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/update_proveedor.php', {
+                    fetch('https://profinal-production.up.railway.app/update_proveedor.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -339,6 +373,7 @@ const EditarProveedor = (props) => {
                                                         name='Direccion'
                                                         id="inputDireccion"
                                                         value={direccion}
+                                                        onClick={handleOpenMap}
                                                         className="form-control"
                                                         placeholder="Direccion"
                                                         onChange={(e) => setDireccion(e.target.value)}
@@ -399,6 +434,28 @@ const EditarProveedor = (props) => {
                     </form>
                 </section>
             </div>
+            <Modal
+                isOpen={isMapOpen}
+                onRequestClose={handleCloseMap}
+                contentLabel="Mapa"
+                style={{
+                    content: {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '50%',
+                        marginLeft: '10%',
+
+                        transform: 'translate(-50%, -50%)',
+                        width: '60%',
+                        height: '60%',
+                    },
+                }}
+            >
+                <MapView onMapClick={handleMapClick} />
+            </Modal>
         </div>
     );
 }

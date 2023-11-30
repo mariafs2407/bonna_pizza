@@ -41,7 +41,7 @@ const InformeIngreso = (props) => {
     useEffect(() => {
         const fecthData = async () => {
             try {
-                const response = await fetch('https://profinal-production-2983.up.railway.app/listar_comprasrealizadas_entregado.php');
+                const response = await fetch('https://profinal-production.up.railway.app/listar_comprasrealizadas_entregado.php');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }

@@ -36,7 +36,7 @@ function NuevoProducto({ closeModal, actualizarProductos, productos }) {
 
 
     const leerCategorias = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_categorias.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -108,7 +108,7 @@ function NuevoProducto({ closeModal, actualizarProductos, productos }) {
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-                        fetch('https://profinal-production-2983.up.railway.app/insert_producto.php', {
+                        fetch('https://profinal-production.up.railway.app/insert_producto.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
