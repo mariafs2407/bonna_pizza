@@ -4,7 +4,8 @@ import './Login';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2'
 import AppContext from '../../App';
-
+import logo from '../../assets/logo.png';
+import '../../index';
 
 const Login = ({ onLogin }) => {
     //const { onLogin } = useContext(AppContext);
@@ -145,11 +146,11 @@ const Login = ({ onLogin }) => {
 
 
     return (
-        <div className='login-page'>
+        <div className='login-page fondoLogin'>
             <div className="login-box">
                 <div className="card card-outline card-primary">
-                    <div className="card-header text-center">
-                        <a href="../../index2.html" className="h1"><b>Bonna</b>PIZZA</a>
+                    <div className="text-center">
+                        <img src={logo} alt="" />
                     </div>
                     <div className="card-body">
                         {mensaje && <p style={{ color: "red" }}>{mensaje}</p>}

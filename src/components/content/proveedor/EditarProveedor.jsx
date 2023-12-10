@@ -24,6 +24,8 @@ const EditarProveedor = (props) => {
     const [telefono, setTelefono] = useState('');
     const [ruc, setRuc] = useState('');
     const [distritocombo, setdistritocombo] = useState([]);
+    const [hasVerifiedRuc, setHasVerifiedRuc] = useState(false);
+    const [originalRuc, setOriginalRuc] = useState('');
 
     const [isMapOpen, setIsMapOpen] = useState(false);
     Modal.setAppElement('#root');
@@ -106,6 +108,57 @@ const EditarProveedor = (props) => {
             })
     };
 
+    const handleRucChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 11) {
+            setRuc(val);
+        }
+
+        if (val.length === 11) { // Asume que un RUC válido tiene 11 dígitos
+            Swal.fire({
+                title: '¿Quieres verificar el RUC?',
+                text: 'Serás redirigido a la página de SUNAT para verificar el RUC.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, verificar',
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open('https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp', '_blank');
+                    setHasVerifiedRuc(true);
+                }
+            });
+        }
+    };
+
+
+    const checkIfRucExists = async (ruc) => {
+        try {
+            console.log('Verificando Ruc:', ruc);
+            const response = await fetch('https://profinal-production.up.railway.app/listar_proveedores.php');
+            const data = await response.json();
+            console.log('Datos recibidos de la API:', data);
+            console.log(data);
+            console.log(data.filter(prv => String(prv.RUC).trim() === String(ruc).trim()));
+            const usersWithSameRUC = data.filter(prv => String(prv.RUC).trim() === String(ruc).trim());
+            console.log('Proveedores con el mismo RUC:', usersWithSameRUC);
+            if (usersWithSameRUC.length > 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Error de validación',
+                    text: `El Nro. de RUC ya existe. Por favor, escriba otro.`,
+                });
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (error) {
+            console.error('Ocurrió un error al verificar el nro. de documento:', error);
+            return false;
+        }
+    };
+
     //validaciones:
     const validacionForm = () => {
         const solo_numero = /^[0-9]+$/;
@@ -153,6 +206,16 @@ const EditarProveedor = (props) => {
     //EDITAR PROVEEDOR
     const handleSaveChanges = (e) => {
         e.preventDefault();
+
+        if (ruc !== originalRuc && !hasVerifiedRuc) {
+            Swal.fire({
+                title: 'Por favor verifica el RUC',
+                text: 'Debes verificar el RUC antes de poder guardar el nuevo proveedor.',
+                icon: 'info',
+                confirmButtonText: 'Entendido'
+            });
+            return false;
+        }
 
         if (validacionForm()) {
             const datos = JSON.parse(localStorage.getItem('datosUsuario'));
@@ -228,6 +291,7 @@ const EditarProveedor = (props) => {
             setDireccion(proveedortData.Direccion);
             setDistrito(proveedortData.Distrito);
             setRuc(proveedortData.RUC);
+            setOriginalRuc(proveedortData.RUC);
             setTelefono(proveedortData.Telefono);
         }
     }, [proveedor])
@@ -295,12 +359,14 @@ const EditarProveedor = (props) => {
                                                         className="form-control"
                                                         value={ruc}
                                                         placeholder="Ingrese su numero de RUC"
-                                                        onChange={(e) => {
-                                                            const val = e.target.value;
-                                                            if (/^\d*$/.test(val) && val.length <= 11) {
-                                                                setRuc(val);
+                                                        onBlur={async () => {
+                                                            //verificar solo si se cambie el numero 
+                                                            if (proveedor[0]?.RUC !== ruc) {
+                                                                const RucExiste = await checkIfRucExists(ruc);
+                                                                
                                                             }
                                                         }}
+                                                        onChange={handleRucChange}
                                                         data-inputmask='"mask": "99999999999"'
                                                         data-mask
                                                     />
@@ -353,7 +419,7 @@ const EditarProveedor = (props) => {
                                                         className="form-control"
                                                         value={telefono}
                                                         placeholder="Ingrese su numero de telefono"
-                                                        onChange={(e) => { 
+                                                        onChange={(e) => {
                                                             const val = e.target.value;
                                                             if (/^\d*$/.test(val) && val.length <= 9) {
                                                                 setTelefono(val);

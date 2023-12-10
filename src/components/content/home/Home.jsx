@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import fotoperfil from '../../../assets/masculino.png';
 import avatarFemenina from '../../../assets/femenino.png';
 import '../../../index';
+import './Home.css' ;
 
 const Home = (props) => {
     const showAlert = localStorage.getItem('alerta') === 'true';
@@ -239,7 +240,7 @@ const Home = (props) => {
             <div className='content-header'>
                 <div className="container-fluid">
                     <div className="row mb-2">
-                        <div className="col-sm-6 p-2">
+                        <div className="col-12 p-2">
                             <h1 className='m-0'>Bienvenido/a
                                 "{getNombreEmpleado(usuarioActual)}"</h1>
                         </div>
@@ -252,8 +253,7 @@ const Home = (props) => {
                 <div className="container-fluid">
                     <div class="row">
                         <div class="col-lg-3 col-6">
-
-                            <div class="small-box bg-info">
+                            <div class="small-box notSalida">
                                 <div class="inner">
                                     {cant_sal.map((item) => (
                                         <h3 key={item.cant_orden}>
@@ -272,8 +272,7 @@ const Home = (props) => {
                         </div>
 
                         <div class="col-lg-3 col-6">
-
-                            <div class="small-box bg-success">
+                            <div class="small-box notIngreso">
                                 <div class="inner">
                                     {cant_ing.map((item) => (
                                         <h3 key={item.cant_compra}>
@@ -293,8 +292,7 @@ const Home = (props) => {
                         </div>
 
                         <div class="col-lg-3 col-6">
-
-                            <div class="small-box bg-warning">
+                            <div class="small-box notEmpleados">
                                 <div class="inner">
                                     {cant_emp.map((item) => (
                                         <h3 key={item.cant_empleados}>
@@ -315,8 +313,7 @@ const Home = (props) => {
                         </div>
 
                         <div class="col-lg-3 col-6">
-
-                            <div class="small-box bg-secondary">
+                            <div class="small-box notProveedores ">
                                 <div class="inner">
                                     {cant_prv.map((item) => (
                                         <h3 key={item.cant_proveedores}>
@@ -342,9 +339,9 @@ const Home = (props) => {
                             <FontAwesomeIcon icon={faComment} beat className='pl-2' />
                         </h5>
                         <div className='row'>
-                            <div className="col ">
-                                <div class="col-md-6 col-lg-12">
-                                    <div class="info-box bg-danger">
+                            <div className="col-lg-6 col-md-12 ">
+                                <div class="col-lg-12">
+                                    <div class="info-box notStock">
                                         <span class="info-box-icon">
                                             <FontAwesomeIcon icon={faPizzaSlice} bounce size="xl" />
                                         </span>
@@ -376,8 +373,8 @@ const Home = (props) => {
 
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-lg-12">
-                                    <div class="info-box bg-primary">
+                                <div class="col-lg-12">
+                                    <div class="info-box notCompras">
                                         <span class="info-box-icon">
                                             <FontAwesomeIcon icon={faTruckFast} beatFade size="xl" />
                                         </span>
@@ -409,12 +406,12 @@ const Home = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col">
-                                <div class="col-md-6 col-lg-12">
+                            <div className="col-md-12 col-lg-6">
+                                <div class="col-lg-12">
                                     {datos_usuario.length > 0 ? (
                                         datos_usuario.map((item) => (
                                             <div class="card card-widget widget-user" key={item.Login}>
-                                                <div class="widget-user-header bg-info">
+                                                <div class="widget-user-header notUsuario">
                                                     <h3 class="widget-user-username">{`${item.Nombre} , ${item.Apellido} `}</h3>
                                                     <h5 class="widget-user-desc"> {item.Nivel}</h5>
                                                 </div>
@@ -423,21 +420,21 @@ const Home = (props) => {
                                                 </div>
                                                 <div class="card-footer">
                                                     <div class="row">
-                                                        <div class="col-sm-4 border-right">
+                                                        <div class="col col-md-4 border-right">
                                                             <div class="description-block">
                                                                 <h5 class="description-header">Telefono</h5>
                                                                 <span class="description-text">{item.Telefono}</span>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-sm-4 border-right">
+                                                        <div class="col col-md-4  border-right ">
                                                             <div class="description-block">
                                                                 <h5 class="description-header">Descripción de cargo</h5>
                                                                 <span class="description-text">{item.Descripcion}</span>
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-sm-4">
+                                                        <div class="col col-md-4 border-left">
                                                             <div class="description-block">
                                                                 <h5 class="description-header">Años de servicio</h5>
                                                                 <span class="description-text">{item.A_Servicios}</span>

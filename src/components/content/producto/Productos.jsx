@@ -3,9 +3,10 @@ import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCarrot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faPlus, faCarrot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import NuevoProducto from './NuevoProducto';
 import EditarProducto from './EditarProducto';
+import SinResultados from "../animacion/SinResultados";
 import './Productos';
 import '../../../index';
 
@@ -44,7 +45,7 @@ const Productos = (props) => {
             })
     }
     useEffect(() => {
-        leerEmpleados();        
+        leerEmpleados();
     }, []);
 
     const getNivel = (login) => {
@@ -55,16 +56,16 @@ const Productos = (props) => {
         return "Empleado no encontrado";
     };
 
-    const nivelusuario = getNivel(usuarioActual); 
+    const nivelusuario = getNivel(usuarioActual);
 
     const limitarfuncion = (nivel) => {
         if (nivel === 'Empleado') {
             nuevoproducto = "none";
             editarproducto = "none";
-        }else if(nivel === 'Gerente'){
+        } else if (nivel === 'Gerente') {
             nuevoproducto = "none";
             editarproducto = "none";
-        }else if(nivel === 'Gestor de operaciones'){
+        } else if (nivel === 'Gestor de operaciones') {
             nuevoproducto = "";
             editarproducto = "";
         }
@@ -175,7 +176,7 @@ const Productos = (props) => {
             <section className="content-header">
                 <div className="container-fluid">
                     <div className="row mb-2">
-                        <div className="col-sm-6">
+                        <div className="col-sm-12">
                             <h1>Lista de Ingredientes :</h1>
                         </div>
                     </div>
@@ -191,12 +192,12 @@ const Productos = (props) => {
                                 <div className="row">
                                     <div className="col-12 ">
                                         <button type="submit" className="btn btn-success float-left ml-4 mt-3"
-                                            onClick={openNuevaProductoModal} style={{display: nuevoproducto}}>
+                                            onClick={openNuevaProductoModal} style={{ display: nuevoproducto }}>
                                             <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{ color: "#fff", }} />
                                             Nuevo Ingrediente
                                         </button>
-
-                                        <div className="form-inline float-right mr-4 mt-3">
+                                    
+                                        <div className="form-inline float-right mr-4 mt-3  ml-3">
                                             <div className="input-group" data-widget="sidebar-search">
                                                 <SearchInput
                                                     type="search"
@@ -214,8 +215,9 @@ const Productos = (props) => {
                                     </div>
                                 </div>
                                 <div className='row'>
-                                    <div className="col-12 d-flex align-items-center justify-content-center">
-                                        <div className="form-inline mr-4 mt-3">
+                                    <div className="col-12 d-flex align-items-center justify-content-center 
+                                                     flex-wrap">
+                                        <div className="form-inline mr-4 mt-3 ml-3">
                                             <label htmlFor="inputEstado" className='mr-3'>Seleccionar Estado :</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
@@ -228,8 +230,8 @@ const Productos = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline mr-4 mt-3">
-                                            <label htmlFor="inputDescontinuado" className='mr-3'>Seleccionar Disponibilidad :</label>
+                                        <div className="form-inline mr-4 mt-3 ml-3">
+                                            <label htmlFor="inputDescontinuado" className='mr-3'><div className='d-none d-sm-block'>Seleccionar </div> Disponibilidad :</label>
                                             <select
                                                 onChange={(e) => setdescontinuadoSeleccionado(e.target.value)}
                                                 id="inputDescontinuado"
@@ -241,8 +243,8 @@ const Productos = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline mr-4 mt-3">
-                                            <label htmlFor="inputDescontinuado" className='mr-3'>Seleccionar Categoría :</label>
+                                        <div className="form-inline mr-4 mt-3 ml-3">
+                                            <label htmlFor="inputDescontinuado" className='mr-3'><div className='d-none d-sm-block'>Seleccionar </div> Categoría :</label>
                                             <select id="inputCategoria"
                                                 onChange={(e) => setCategoriaSeleccionado(e.target.value)}
                                                 className="form-control custom-select pr-4"
@@ -273,39 +275,44 @@ const Productos = (props) => {
 
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {productoEstado.map((producto) => (
-                                                <tr key={producto.Codigo}>
-                                                    <td className="project-actions text-right">
-                                                        <button style={{display: editarproducto}}
-                                                            onClick={() => handleEditarProducto(producto.Codigo)}
-                                                            className="btn btn-info btn-sm"                                                        >
-                                                            <i className="fas fa-pencil-alt pr-2"></i>
-                                                            Editar
-                                                        </button>
-                                                    </td>
-                                                    <td>{producto.Codigo}</td>
-                                                    <td>{producto.Producto}</td>
-                                                    <td>{producto.Categoria}</td>
-                                                    <td>{producto.StockMinimo}</td>
-                                                    <td>{producto.U_Medida}</td>
-                                                    <td>{producto.Descontinuado}</td>
-                                                    <td>{producto.Estado}</td>
+                                        {productoEstado.length === 0 ? (
+                                            <SinResultados columns={8} />
+                                        ) : (
+                                            <tbody>
+                                                {productoEstado.map((producto) => (
+                                                    <tr key={producto.Codigo}>
+                                                        <td className="project-actions text-right">
+                                                            <button style={{ display: editarproducto }}
+                                                                onClick={() => handleEditarProducto(producto.Codigo)}
+                                                                className="btn btn-info btn-sm"                                                        >
+                                                                <FontAwesomeIcon icon={faPen} className='pr-2' />
+                                                                Editar
+                                                            </button>
+                                                        </td>
+                                                        <td>{producto.Codigo}</td>
+                                                        <td>{producto.Producto}</td>
+                                                        <td>{producto.Categoria}</td>
+                                                        <td>{producto.StockMinimo}</td>
+                                                        <td>{producto.U_Medida}</td>
+                                                        <td>{producto.Descontinuado}</td>
+                                                        <td>{producto.Estado}</td>
 
-                                                </tr>
-                                            ))}
+                                                    </tr>
+                                                ))}
 
-                                        </tbody>
+                                            </tbody>
+                                        )}
+
 
                                     </table>
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=">"
                                     onPageChange={handlePageClick}
                                     pageRangeDisplayed={5}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="<"
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"

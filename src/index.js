@@ -36,6 +36,8 @@ import Gastos from './components/content/gastos/Gastos';
 import Usuarios from './components/content/usuarios/Usuarios';
 import NuevoUsuario from './components/content/usuarios/NuevoUsuario';
 import EditarUsuarios from './components/content/usuarios/EditarUsuario';
+//Inventariado
+import Inventariado from './components/content/historialInventaria/Historial';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -86,6 +88,9 @@ root.render(
         <Route index element={<Usuarios />} />
         <Route path='editar/:login' element={<EditarUsuarios />} />
         <Route path='nuevo' element={<NuevoUsuario />} />
+      </Route>
+      <Route path='/inventariado' element={<App />} >
+        <Route index element={<Inventariado />} />
       </Route>
 
       <Route path='login' element={<Login />} />      

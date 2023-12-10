@@ -6,6 +6,8 @@ import Modal from 'react-modal';
 import "react-datepicker/dist/react-datepicker.css"; // estilos CSS
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan, faBasketShopping, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import './IngresoProducto.css';
+import '../../../index';
 
 const IngresoProducto = () => {
     const navigate = useNavigate();
@@ -515,7 +517,7 @@ const IngresoProducto = () => {
                                     <i className="ion ion-clipboard mr-2"></i>
                                     Detalle de Compra :
                                 </h3>
-                                <table className="table">
+                                <table className="table estiloScroll table-responsive">
                                     <thead>
                                         <tr>
                                             <th >#</th>
@@ -578,11 +580,7 @@ const IngresoProducto = () => {
                 </section>
 
                 <Modal isOpen={modalIsOpen} className="modal-dialog">
-                    <div className="modal-content"
-                        style={{
-                            backgroundColor: 'white', maxWidth: '500px', margin: '0 auto',
-                            padding: '16px', marginTop: '28px', borderRadius: '15px'
-                        }}>
+                    <div className="modal-content modal-contorno">
                         <div className="modal-header" style={{ padding: '16px' }}>
                             <h5 className="modal-title" style={{ fontSize: 'calc(1.275rem + .3vw)' }}>Editar Ingrediente</h5>
                             <button type="button" className="close" onClick={() => setModalIsOpen(false)}>
@@ -648,9 +646,9 @@ const IngresoProducto = () => {
                                 </div>
                             </form>
                         </div>
-                        <div className="modal-footer">
+                        <div className="modal-footer d-flex ">
                             <button type="button"
-                                className="btn btn-success"
+                                className="btn btn-success mx-auto"
                                 onClick={handleGuardarClick}>Guardar Cambios</button>
                         </div>
 

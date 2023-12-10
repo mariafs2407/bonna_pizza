@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faPrint, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faPrint, faCopy, faMagnifyingGlass,faFileCsv ,faFileExcel} from '@fortawesome/free-solid-svg-icons';
 import SearchInput, { createFilter } from 'react-search-input';
 import ReactPaginate from 'react-paginate';
 import { usePDF } from 'react-to-pdf';
@@ -9,8 +9,9 @@ import Modal from 'react-modal';
 import * as XLSX from "xlsx";
 import { useReactToPrint } from 'react-to-print';
 import { CSVLink, CSVDownload } from "react-csv";
+import SinResultados from "../animacion/SinResultados";
 
-const KEYS_TO_FILTERS = ['Proveedor','Producto', 'Fecha_compra'];
+const KEYS_TO_FILTERS = ['Proveedor', 'Producto', 'Fecha_compra'];
 
 const InformeIngreso = (props) => {
     const [ingreso, setIngreso] = useState([]);
@@ -84,7 +85,7 @@ const InformeIngreso = (props) => {
         const ws = XLSX.utils.json_to_sheet(ingreso);//datos de la tabla
         const wb = XLSX.utils.book_new();//crear una hoja vacia
         //agregar la hoja con los datos y ponerle nombre 
-        XLSX.utils.book_append_sheet(wb, ws, "Ingreso");        
+        XLSX.utils.book_append_sheet(wb, ws, "Ingreso");
 
         // Guardar el archivo en formato XLSX
         XLSX.writeFile(wb, "Informe_de_Ingreso.xlsx");
@@ -125,30 +126,30 @@ const InformeIngreso = (props) => {
                     <div className="card-body">
                         <div id="example1_wrapper" className="dataTables_wrapper dt-bootstrap4">
                             <div className="row">
-                                <div className="col-sm-12 col-md-6" >
-                                    <div className="dt-buttons btn-group flex-wrap">
+                                <div className="col-sm-4 col-md-6" >
+                                    <div className="dt-buttons btn-group flex-wrap margin-buttons">
                                         <button className="btn btn-secondary buttons-copy buttons-html5" tabindex="0" aria-controls="example1" type="button"
                                             onClick={copiarTabla}>
                                             <FontAwesomeIcon icon={faCopy} className="pr-2" />
-                                            <span>Copiar</span>
+                                            <span className='text-informe-responsive'>Copiar</span>
                                         </button>
                                         <CSVLink filename={"informe_ingreso.csv"} data={ingreso} className="btn btn-secondary buttons-csv buttons-html5" tabindex="0" aria-controls="example1" type="button">
-                                            <FontAwesomeIcon icon={faDownload} className="pr-2" />
-                                            <span>CSV</span>
+                                            <FontAwesomeIcon icon={faFileCsv} className="pr-2" />
+                                            <span className='text-informe-responsive'>CSV</span>
                                         </CSVLink>
                                         <button className="btn btn-secondary buttons-excel buttons-html5" tabindex="0" aria-controls="example1" type="button"
                                             onClick={exportToExcel}>
-                                            <FontAwesomeIcon icon={faDownload} className="pr-2" />
-                                            <span>Excel</span>
-                                        </button>                                        
+                                            <FontAwesomeIcon icon={faFileExcel} className="pr-2" />
+                                            <span className='text-informe-responsive'>Excel</span>
+                                        </button>
                                         <button className="btn btn-secondary buttons-print" tabindex="0" aria-controls="example1" type="button"
-                                        onClick={imprimirtabla}>
-                                            <FontAwesomeIcon icon={faPrint} className="pr-2"/>
-                                            <span>Imprimir</span>
+                                            onClick={imprimirtabla}>
+                                            <FontAwesomeIcon icon={faPrint} className="pr-2" />
+                                            <span className='text-informe-responsive'>Imprimir</span>
                                         </button>
                                     </div>
                                 </div>
-                                <div className="col-sm-12 col-md-6">
+                                <div className="col-sm-8 col-md-6">
                                     <div className="input-group" data-widget="sidebar-search">
                                         <SearchInput
                                             type="search"
@@ -158,7 +159,7 @@ const InformeIngreso = (props) => {
                                         />
                                         <div className="input-group-append">
                                             <button className="btn btn-outline-secondary" >
-                                                <i className="fas fa-search fa-fw"></i>
+                                                <FontAwesomeIcon icon={faMagnifyingGlass} />
                                             </button>
                                         </div>
                                     </div>
@@ -168,7 +169,7 @@ const InformeIngreso = (props) => {
                                 <div className="col-sm-12 card-body table-responsive p-3 estiloScroll" ref={targetRef}>
                                     <table ref={componentRef} id="example1" className="table table-head-fixed table-hover text-nowrap" aria-describedby="example1_info">
                                         <thead>
-                                            <tr>                                                
+                                            <tr>
                                                 <th>IdCompra</th>
                                                 <th>IdProducto</th>
                                                 <th>Empleado</th>
@@ -185,37 +186,42 @@ const InformeIngreso = (props) => {
                                                 <th>Usr. de Modif.</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {currentIngreso.map((item, index) => (
-                                                <tr key={index} >
-                                                    <td>{item.IdCompra} </td>
-                                                    <td>{item.IdProducto}</td>
-                                                    <td>{item.Empleado}</td>
-                                                    <td>{item.Producto}</td>
-                                                    <td>{item.Proveedor}</td>
-                                                    <td>{item.Fecha_Lote}</td>
-                                                    <td>{item.Fecha_Vencimiento}</td>
-                                                    <td>{item.Precio}</td>
-                                                    <td>{item.Cantidad}</td>
-                                                    <td>{item.Total}</td>
-                                                    <td>{item.Fecha_compra}</td>
-                                                    <td>{item.Usu_Registro}</td>
-                                                    <td>{item.Fecha_modificacion}</td>
-                                                    <td>{item.Usu_Ult_Mod}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
+                                        {currentIngreso.length === 0 ? (
+                                            <SinResultados columns={14} />
+                                        ) : (
+                                            <tbody>
+                                                {currentIngreso.map((item, index) => (
+                                                    <tr key={index} >
+                                                        <td>{item.IdCompra} </td>
+                                                        <td>{item.IdProducto}</td>
+                                                        <td>{item.Empleado}</td>
+                                                        <td>{item.Producto}</td>
+                                                        <td>{item.Proveedor}</td>
+                                                        <td>{item.Fecha_Lote}</td>
+                                                        <td>{item.Fecha_Vencimiento}</td>
+                                                        <td>{item.Precio}</td>
+                                                        <td>{item.Cantidad}</td>
+                                                        <td>{item.Total}</td>
+                                                        <td>{item.Fecha_compra}</td>
+                                                        <td>{item.Usu_Registro}</td>
+                                                        <td>{item.Fecha_modificacion}</td>
+                                                        <td>{item.Usu_Ult_Mod}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        )}
+
                                     </table>
                                 </div>
                             </div>
                             <div className="row">
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=" >"
                                     onPageChange={handlePageClick}
-                                    pageRangeDisplayed={5}
+                                    pageRangeDisplayed={2}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="< "
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"

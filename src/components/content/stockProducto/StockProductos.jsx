@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import Consultar from '../animacion/Consultar';
+import './StockProductos.css';
 
 const StockProductos = (props) => {
     const [idIngrediente, setIdIngrediente] = useState(""); // idproducto 
@@ -91,7 +95,7 @@ const StockProductos = (props) => {
                                                     class="btn btn-lg btn-default"
                                                     onClick={handleSubmit}
                                                 >
-                                                    <i class="fa fa-search"></i>
+                                                    <FontAwesomeIcon icon={faMagnifyingGlass} />
                                                 </button>
                                             </div>
                                         </div>
@@ -110,7 +114,7 @@ const StockProductos = (props) => {
                         <form method="post">
                             <div className="card card-primary">
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 col-sm-6">
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label htmlFor="Producto">Ingrediente </label>
@@ -149,7 +153,7 @@ const StockProductos = (props) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-6 col-sm-6">
                                         <div className="card-body">
                                             <div className="form-group">
                                                 <label htmlFor="Categoria">Categoria</label>
@@ -184,8 +188,8 @@ const StockProductos = (props) => {
                                                     name='StockActual'
                                                     disabled={true}
                                                     value={stock.Stock_Actual}
-                                                    style={{ backgroundColor: parseIntStockActual > parseIntStockMinimo ? '#28a745' : '#DC1D18'  }}
-                                                    
+                                                    style={{ backgroundColor: parseIntStockActual > parseIntStockMinimo ? '#28a745' : '#DC1D18' }}
+
                                                 />
                                             </div>
                                         </div>
@@ -194,14 +198,14 @@ const StockProductos = (props) => {
                                         <div className="card-body pt-0">
                                             <div className="form-group">
                                                 <label htmlFor="JustificacionStockMinimo">Justificacion del Stock Minimo</label>
-                                                <input
+                                                <textarea
                                                     type="text"
                                                     id="JustificacionStockMinimo"
                                                     className="form-control text-white"
                                                     name='JustificacionStockMinimo'
                                                     disabled={true}
                                                     value={stock.justificacionStockMinimo}
-                                                    style={{ backgroundColor: '#007bff', color: '#fff' }}
+                                                    style={{ backgroundColor: '#007bff', color: '#fff'}}
                                                 />
                                             </div>
                                         </div>
@@ -209,12 +213,14 @@ const StockProductos = (props) => {
                                 </div>
                             </div>
                         </form>
-                    ) : null}
-                </section>
+                    ) : (
+                        <Consultar/>
+                    ) }
+            </section>
 
 
-            </div>
         </div>
+        </div >
     );
 }
 

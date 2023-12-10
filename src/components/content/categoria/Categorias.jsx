@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import EditarCategoria from "./EditarCategoria";
 import NuevaCategoria from './NuevaCategoria';
+import SinResultados from "../animacion/SinResultados";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faPlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 const KEYS_TO_FILTERS = ["nombre"];
 
@@ -61,10 +64,10 @@ const Categorias = (props) => {
         if (nivel === 'Empleado') {
             nuevacategoria = "none";
             editarcategoria = "none";
-        }else if(nivel === 'Gerente'){
+        } else if (nivel === 'Gerente') {
             nuevacategoria = "none";
             editarcategoria = "none";
-        }else if(nivel === 'Gestor de operaciones'){
+        } else if (nivel === 'Gestor de operaciones') {
             nuevacategoria = "";
             editarcategoria = "";
         }
@@ -182,13 +185,13 @@ const Categorias = (props) => {
                         <div className="col-12">
                             <div className="card">
                                 <div className="row">
-                                    <div className="col-12 d-flex align-items-center justify-content-between">
+                                    <div className="col-12 d-flex align-items-center justify-content-between flex-wrap">
                                         <button
                                             type="submit"
                                             style={{ display: nuevacategoria }}
                                             className="btn btn-success float-left ml-4 mt-3"
                                             onClick={openNuevaCategoriaModal}
-                                        ><i class="bi bi-patch-plus pr-2"></i>
+                                        ><FontAwesomeIcon icon={faPlus} className='pr-2' />
                                             Nueva Categoria
                                         </button>
 
@@ -205,7 +208,7 @@ const Categorias = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline float-right mr-4 mt-3">
+                                        <div className="form-inline buscador float-right mr-4 mt-3 ml-4">
                                             <div className="input-group" data-widget="sidebar-search">
                                                 <SearchInput
                                                     type="search"
@@ -215,7 +218,7 @@ const Categorias = (props) => {
                                                 />
                                                 <div className="input-group-append">
                                                     <button className="btn btn-outline-secondary">
-                                                        <i className="fas fa-search fa-fw"></i>
+                                                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -223,10 +226,10 @@ const Categorias = (props) => {
                                     </div>
                                 </div>
 
-                                <div className="card-body">
+                                <div className="card-body estiloScroll">
                                     <table
                                         id="example1"
-                                        className="table table-head-fixed table-hover text-nowrap"
+                                        className="table table-head-fixed table-responsive2 table-hover text-nowrap"
                                     >
                                         <thead>
                                             <tr>
@@ -235,36 +238,40 @@ const Categorias = (props) => {
                                                 <th>Nombre</th>
                                                 <th>Descripcion</th>
                                                 <th>Estado</th>
-
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {categoriasEstado.map((categoria) => (
-                                                <tr key={categoria.Id_Cat}>
-                                                    <td className="project-actions text-right">
-                                                    <button style={{ display: editarcategoria }}
-                                                            onClick={() => handleEditarCategoria(categoria)}
-                                                            className="btn btn-info btn-sm"                                                        >
-                                                            <i className="fas fa-pencil-alt pr-2"></i>
-                                                            Editar
-                                                    </button>
-                                                    </td>
-                                                    <td>{categoria.Id_Cat}</td>
-                                                    <td>{categoria.nombre}</td>
-                                                    <td>{categoria.Des_Cat}</td>
-                                                    <td>{categoria.estado}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
+                                        {categoriasEstado.length === 0 ? (
+                                            <SinResultados columns={5}/>
+                                        ) : (
+                                            <tbody>
+                                                {categoriasEstado.map((categoria) => (
+                                                    <tr key={categoria.Id_Cat}>
+                                                        <td className="project-actions text-right">
+                                                            <button style={{ display: editarcategoria }}
+                                                                onClick={() => handleEditarCategoria(categoria)}
+                                                                className="btn btn-info btn-sm"                                                        >
+                                                                <FontAwesomeIcon icon={faPen} className='pr-2' />
+                                                                Editar
+                                                            </button>
+                                                        </td>
+                                                        <td>{categoria.Id_Cat}</td>
+                                                        <td>{categoria.nombre}</td>
+                                                        <td>{categoria.Des_Cat}</td>
+                                                        <td>{categoria.estado}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        )}
+
                                     </table>
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=" >"
                                     onPageChange={handlePageClick}
                                     pageRangeDisplayed={5}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="< "
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"
@@ -282,25 +289,29 @@ const Categorias = (props) => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section >
             {/* Modal para editar categoría */}
-            {isModalOpen && (
-                <EditarCategoria
-                    categoria={categoriaEditando}
-                    closeModal={() => {
-                        setIsModalOpen(false);
-                        setReloadData(!reloadData);
-                    }}
-                />
-            )}
+            {
+                isModalOpen && (
+                    <EditarCategoria
+                        categoria={categoriaEditando}
+                        closeModal={() => {
+                            setIsModalOpen(false);
+                            setReloadData(!reloadData);
+                        }}
+                    />
+                )
+            }
 
             {/* Modal para nueva categoría */}
-            {NuevaCategoriaModalOpen && (
-                <NuevaCategoria
-                    closeModal={closeNuevaCategoriaModal}
-                />
-            )}
-        </div>
+            {
+                NuevaCategoriaModalOpen && (
+                    <NuevaCategoria
+                        closeModal={closeNuevaCategoriaModal}
+                    />
+                )
+            }
+        </div >
     );
 };
 

@@ -9,7 +9,8 @@ import MapView from './MapView';
 import Modal from 'react-modal';
 
 const NuevoUsuario = (props) => {
-    
+
+    const navigate = useNavigate();
     //usuario
     const [login, setLogin] = useState("");
     const [contrasenia, setContrasenia] = useState("");
@@ -128,7 +129,7 @@ const NuevoUsuario = (props) => {
                 setIsNivelDisabled(true);
                 setIsEstadoDisabled(true);
             }
-            
+
         } else {
             Swal.fire({
                 icon: 'info',
@@ -167,8 +168,8 @@ const NuevoUsuario = (props) => {
             startDateNaci < today && cargo && direccion && tipoDoc &&
             solo_numero.test(nroDoc) && distrito && solo_numero.test(telefono)
             && genero) {
-                setIsGuardarActive(true); // activa el botón de guardar
-            
+            setIsGuardarActive(true); // activa el botón de guardar
+
         } else {
             Swal.fire({
                 icon: 'info',
@@ -183,7 +184,7 @@ const NuevoUsuario = (props) => {
         '2': 'CARNET DE EXTRANJERIA',
         '3': 'PASAPORTE'
     };
-    
+
     const checkIfDniExists = async (dni, tipoDoc) => {
         try {
             console.log('Verificando DNI:', dni);
@@ -191,7 +192,7 @@ const NuevoUsuario = (props) => {
             const data = await response.json();
             console.log('Datos recibidos de la API:', data);
             console.log(data);
-            console.log(data.filter(user => String(user.Nro_doc).trim() === String(dni).trim() && user.Tipo_doc === docTypes[tipoDoc]) );
+            console.log(data.filter(user => String(user.Nro_doc).trim() === String(dni).trim() && user.Tipo_doc === docTypes[tipoDoc]));
             const usersWithSameDni = data.filter(user => String(user.Nro_doc).trim() === String(dni).trim() && user.Tipo_doc === docTypes[tipoDoc]);
             console.log('Usuarios con el mismo nro. documento:', usersWithSameDni);
             if (usersWithSameDni.length > 0) {
@@ -204,7 +205,7 @@ const NuevoUsuario = (props) => {
             } else {
                 return false;
             }
-            
+
         } catch (error) {
             console.error('Ocurrió un error al verificar el nro. de documento:', error);
             return false;
@@ -342,7 +343,7 @@ const NuevoUsuario = (props) => {
             return true;
         }
 
-        
+
     }
 
     const handleSaveChanges = async (e) => {
@@ -404,28 +405,14 @@ const NuevoUsuario = (props) => {
                         },
                         body: formData,
                     })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            const contentType = response.headers.get('content-type');
-                            if (contentType && contentType.indexOf('application/json') !== -1) {
-                                return response.json();
-                            } else {
-                                return response.text();
-                            }
-                        })
+                        .then((response) => response.json())
                         .then((data) => {
-                            try {
-
-                                if (data === -1) {
-                                    Swal.fire('Orden guardada con exito', '', 'success')
-                                }
-                                if (data === -2) {
-                                    Swal.fire("Error al registrar");
-                                }
-                            } catch (error) {
-                                console.error('La respuesta no es JSON válido:', data);
+                            if (data === -1) {
+                                Swal.fire('Usuario ingresado con exito', '', 'success')
+                                navigate('/usuarios')
+                            }
+                            else {
+                                Swal.fire('Error al registrar', '', 'error')
                             }
                         })
                         .catch((error) => {
@@ -433,8 +420,6 @@ const NuevoUsuario = (props) => {
                         });
                 } else if (result.isDenied) {
                     Swal.fire('Los cambios no se guardaron', '', 'info')
-                    console.log(nombre);
-                    console.log(apellido);
                 }
             })
         }
@@ -653,7 +638,7 @@ const NuevoUsuario = (props) => {
                                                 value={nroDoc}
                                                 onBlur={async () => {
                                                     const dniExists = await checkIfDniExists(nroDoc, tipoDoc);
-                                                    
+
                                                 }}
                                                 onChange={(e) => {
                                                     const val = e.target.value;
@@ -772,11 +757,11 @@ const NuevoUsuario = (props) => {
                                                 disabled={!isUsuarioActive}
                                             >
                                                 <option value="">Seleccionar un Genero</option>
-                                                    <option value="0">Masculino</option>
-                                                    <option value="1">Femenino</option>
+                                                <option value="0">Masculino</option>
+                                                <option value="1">Femenino</option>
                                             </select>
                                         </div>
-                                    </div>                
+                                    </div>
                                 </div>
 
                             </div>
@@ -789,7 +774,7 @@ const NuevoUsuario = (props) => {
                                             disabled={!isUsuarioActive || !nombre || !apellido ||
                                                 !startDateNaci || !cargo || !startDateIng || !direccion || !tipoDoc ||
                                                 !nroDoc || !distrito || !telefono || !genero}
-                                            onClick={handleEmpleadoClick}    
+                                            onClick={handleEmpleadoClick}
                                         >
                                             Ingresar nuevo Usuario
                                         </button>

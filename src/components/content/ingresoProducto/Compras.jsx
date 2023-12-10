@@ -285,7 +285,7 @@ const Compras = (props) => {
                                 </div>
 
                                 <div className="row">
-                                    <div className="col-12 d-flex  justify-content-between pb-2">
+                                    <div className="col-12 d-flex  justify-content-between pb-2 flex-wrap">
                                         <div className="form-inline mr-4 mt-4 ml-4">
                                             <label htmlFor="inputEstado" className='mr-3'>Filtrar por:</label>
                                             <select
@@ -298,7 +298,7 @@ const Compras = (props) => {
                                         </div>
 
                                         <div id='filtrofechas' className='align-items-center mt-3'>
-                                            <h6 class="text-center fw-bold">Filtrar por fechas:</h6>
+                                            <h6 class="text-center fw-bold d-none d-sm-block">Filtrar por fechas:</h6>
                                             <div className='d-flex'>
                                                 <div className="form-inline mr-4 ml-4">
                                                     <label htmlFor="inputFechaReciente" className='mr-3'>Desde:</label>
@@ -376,11 +376,11 @@ const Compras = (props) => {
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=">"
                                     onPageChange={handlePageClick}
-                                    pageRangeDisplayed={5}
+                                    pageRangeDisplayed={2}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="<"
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"
@@ -401,13 +401,8 @@ const Compras = (props) => {
             </section >
 
             <Modal isOpen={modalIsOpen} className="modal-dialog">
-                <div className="modal-content"
-                    style={{
-                        backgroundColor: 'white',
-                        maxWidth: '500px',
-                        margin: '0 auto',
-                        padding: '16px', marginTop: '28px', borderRadius: '15px'
-                    }}>
+                <div className="modal-content modal-contorno"
+                    >
                     <div className="modal-header" style={{ padding: '16px' }}>
                         <h5 className="modal-title"
                             style={{ fontSize: 'calc(1.275rem + .3vw)' }}

@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan, faBasketShopping } from '@fortawesome/free-solid-svg-icons';
 import "react-datepicker/dist/react-datepicker.css"; // estilos CSS
 import Modal from 'react-modal';
+import './SalidaProducto.css';
+import '../../../index';
 
 const SalidaProducto = (props) => {
     const [idEmpleado, setIdEmpleado] = useState(""); // idempleado 
@@ -436,7 +438,7 @@ const SalidaProducto = (props) => {
                                     <i className="ion ion-clipboard mr-2"></i>
                                     Detalle de Orden
                                 </h3>
-                                <table className="table">
+                                <table className="table estiloScroll table-responsive">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -492,10 +494,7 @@ const SalidaProducto = (props) => {
             </form>
 
             <Modal isOpen={modalIsOpen} className="modal-dialog">
-                <div className="modal-content" style={{
-                    backgroundColor: 'white', maxWidth: '500px', margin: '0 auto',
-                    padding: '16px', marginTop: '28px', borderRadius: '15px'
-                }}>
+                <div className="modal-content modal-contorno">
                     <div className="modal-header" style={{ padding: '16px' }}>
                         <h5 className="modal-title" style={{ fontSize: 'calc(1.275rem + .3vw)' }}>Editar Ingrediente</h5>
                         <button type="button" className="close" onClick={() => setModalIsOpen(false)}>

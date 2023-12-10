@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUserPen, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import ReactPaginate from 'react-paginate';
+import SinResultados from "../animacion/SinResultados";
 import '../../../index';
+import './Usuario.css';
 
 const KEYS_TO_FILTERS = ['Login']
 
@@ -17,6 +19,7 @@ const Usuarios = (props) => {
     const [usuarios, setUsuarios] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const elemntsPage = 10;
+
 
     //Actulizar campo de busqueda
     const searchUpdated = (term) => {
@@ -42,8 +45,8 @@ const Usuarios = (props) => {
     //filtrar estado
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Todos'); //FILTRADO POR ESTADO
     const [nivelSeleccionado, setNivelSeleccionado] = useState("Todos");//FILTRADO POR NIVEL
-    
-    let usuariosEstado = currentUsuarios.filter((usuario) => {
+
+    const usuariosEstado = currentUsuarios.filter((usuario) => {
         const cumpleEstado = estadoSeleccionado === "Todos" || usuario.Estado === estadoSeleccionado;
         const cumpleNivel = nivelSeleccionado === "Todos" || usuario.Nivel === nivelSeleccionado;
 
@@ -71,7 +74,7 @@ const Usuarios = (props) => {
         fecthData();
     }, [reloadData]);
 
-    
+
     if (loading) return (
         <div className="content-wrapper d-flex justify-content-center align-items-center"
             style={{ height: '90vh' }}>
@@ -99,13 +102,13 @@ const Usuarios = (props) => {
                         <div className="col-12">
                             <div className="card">
                                 <div className="row">
-                                    <div className="col-12 d-flex align-items-center justify-content-between">
-                                        <button type="submit" className="btn btn-success ml-4 mt-3"
+                                    <div className="col-12 d-flex align-items-center justify-content-between  flex-wrap">
+                                        <button type="submit" className="btn btn-success ml-4 mt-3 mr-4"
                                             onClick={() => navigate('./nuevo')}>
                                             <FontAwesomeIcon icon={faUserPlus} className='pr-2' />
                                             Nuevo Usuario
                                         </button>
-                                        <div className="form-inline  mr-4 mt-3">
+                                        <div className="form-inline mr-4 mt-3 ml-4">
                                             <div className="input-group">
                                                 <SearchInput
                                                     type="search"
@@ -124,8 +127,8 @@ const Usuarios = (props) => {
                                 </div>
 
                                 <div className="row">
-                                    <div className="col-12 d-flex align-items-center justify-content-center">
-                                        <div className="form-inline mr-4 mt-3">
+                                    <div className="col-12 d-flex align-items-center justify-content-center flex-wrap">
+                                        <div className="form-inline mr-4 mt-3 ">
                                             <label htmlFor="inputEstado" className='mr-3'>Estado:</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
@@ -139,7 +142,7 @@ const Usuarios = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline mr-4 mt-3">
+                                        <div className="form-inline mr-4 mt-3 ml-4">
                                             <label htmlFor="inputDescontinuado" className='mr-3'>Nivel de usuario :</label>
                                             <select
                                                 onChange={(e) => setNivelSeleccionado(e.target.value)}
@@ -163,7 +166,7 @@ const Usuarios = (props) => {
                                                 <th></th>
                                                 <th>Usuario</th>
                                                 <th>Empleado</th>
-                                                <th>Estado</th>                                                
+                                                <th>Estado</th>
                                                 <th>Genero</th>
                                                 <th>Nivel de Usuario</th>
                                                 <th>Tipo de Documento</th>
@@ -172,38 +175,45 @@ const Usuarios = (props) => {
                                                 <th>Fecha de Ingreso</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {usuariosEstado.map((usuario) => (
-                                                <tr key={usuario.Login}>
-                                                    <td className="project-actions text-right">
-                                                        <Link
-                                                            to={`./editar/${usuario.Login}`}
-                                                            className="btn btn-info btn-sm">
-                                                            <FontAwesomeIcon icon={faUserPen} className='pr-2' />
-                                                            Editar
-                                                        </Link>
-                                                    </td>
-                                                    <td>{usuario.Login}</td>
-                                                    <td>{usuario.Nombre}</td>
-                                                    <td>{usuario.Estado}</td>                                                    
-                                                    <td>{usuario.Genero}</td>
-                                                    <td>{usuario.Nivel}</td>
-                                                    <td>{usuario.Tipo_doc}</td>
-                                                    <td>{usuario.Nro_doc}</td>
-                                                    <td>{usuario.Fecha_Naci}</td>
-                                                    <td>{usuario.Fecha_Ingreso}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
+
+                                        {usuariosEstado.length === 0 ? (
+                                            <SinResultados columns={10}/>
+                                        ) : (
+                                            <tbody>
+                                                {usuariosEstado.map((usuario) => (
+                                                    <tr key={usuario.Login}>
+                                                        <td className="project-actions text-right">
+                                                            <Link
+                                                                to={`./editar/${usuario.Login}`}
+                                                                className="btn btn-info btn-sm">
+                                                                <FontAwesomeIcon icon={faUserPen} className='pr-2' />
+                                                                Editar
+                                                            </Link>
+                                                        </td>
+                                                        <td>{usuario.Login}</td>
+                                                        <td>{usuario.Nombre}</td>
+                                                        <td>{usuario.Estado}</td>
+                                                        <td>{usuario.Genero}</td>
+                                                        <td>{usuario.Nivel}</td>
+                                                        <td>{usuario.Tipo_doc}</td>
+                                                        <td>{usuario.Nro_doc}</td>
+                                                        <td>{usuario.Fecha_Naci}</td>
+                                                        <td>{usuario.Fecha_Ingreso}</td>
+                                                    </tr>
+                                                ))
+                                                } </tbody>
+                                        )}
+
+
                                     </table>
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=" >"
                                     onPageChange={handlePageClick}
                                     pageRangeDisplayed={5}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="< "
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"

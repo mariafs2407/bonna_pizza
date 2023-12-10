@@ -214,7 +214,7 @@ function NuevoProducto({ closeModal, actualizarProductos, productos }) {
 
                                         <div className="col-12 ">
                                             <div className='row'>
-                                                <div class="col-8 ">
+                                                <div class="col-lg-8 col-sm-12 ">
                                                     <div className="form-group">
                                                         <label for="inputUnidadMedida">Unidad de Medida</label>
                                                         <select id="inputmedida"
@@ -232,7 +232,7 @@ function NuevoProducto({ closeModal, actualizarProductos, productos }) {
                                                 </div>
 
 
-                                                <div className='col-4'>
+                                                <div className='col-lg-4 col-sm-12'>
                                                     <div className="form-group">
                                                         <label for="inputStockMinimo">Stock Minimo</label>
                                                         <input
@@ -261,7 +261,7 @@ function NuevoProducto({ closeModal, actualizarProductos, productos }) {
                                                     id="inputCustificacionStockMinimo"
                                                     className="form-control text-white"
                                                     placeholder="Justificacion del Stock Minimo"
-                                                    style={{ backgroundColor: '#007bff', color: '#fff', height: '110px' }}
+                                                    style={{ backgroundColor: '#007bff', color: '#fff', height: '120px' }}
                                                 />
                                             </div>
                                         </div>

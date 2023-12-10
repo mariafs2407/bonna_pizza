@@ -114,7 +114,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
     const validarNombreProducto = () => {
         // Verificar si el nombre del producto ya existe en la lista actual
-        return productos.some((producto) => producto.Producto === nomProducto);
+        return false;
     };
 
     // editar producto
@@ -288,7 +288,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
                                             <div className="col-12 ">
                                                 <div className='row'>
-                                                    <div className='col-6'>
+                                                    <div className='col-lg-6 col-sm-12'>
                                                         <div className="form-group">
                                                             <label htmlFor="inputDescontinuado">Descontinuado</label>
                                                             <select
@@ -304,7 +304,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         </div></div>
 
 
-                                                    <div className='col-6'>
+                                                    <div className='col-lg-6 col-sm-12'>
                                                         <div className="form-group">
                                                             <label htmlFor="inputEstado">Estado</label>
                                                             <select
@@ -323,7 +323,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
                                             <div className="col-12 ">
                                                 <div className='row'>
-                                                    <div className="col-8 ">
+                                                    <div className="col-lg-8 col-sm-12">
                                                         <div className="form-group">
                                                             <label htmlFor="inputUnidadMedida">Unidad de Medida</label>
                                                             <select
@@ -342,7 +342,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         </div>
                                                     </div>
 
-                                                    <div className='col-4'>
+                                                    <div className='col-lg-4 col-sm-12'>
                                                         <div className="form-group">
                                                             <label for="inputStockMinimo">Stock Minimo</label>
                                                             <input
@@ -371,7 +371,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         id="inputJustificacionStockMinimo"
                                                         className="form-control "
                                                         placeholder="Justificacion del Stock Minimo"
-                                                        style={{ backgroundColor: '#007bff', color: '#fff', height: '90px' }}
+                                                        style={{ backgroundColor: '#007bff', color: '#fff', height: '120px' }}
 
                                                     />
                                                 </div>
