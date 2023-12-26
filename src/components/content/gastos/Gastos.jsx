@@ -14,7 +14,7 @@ const Gastos = () => {
     const fetchData = async () => {
         try {
             const response = await fetch(
-                "https://profinal-production-2983.up.railway.app/listar_gastosa%C3%B1o.php");
+                "https://profinal-production.up.railway.app/listar_gastosa%C3%B1o.php");
             if (!response.ok) {
                 throw new Error("Error en la solicitud");
             }

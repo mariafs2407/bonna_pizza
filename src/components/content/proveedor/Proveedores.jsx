@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faPlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import SinResultados from "../animacion/SinResultados";
 import './Proveedor.css';
 import '../../../index';
 
@@ -18,12 +21,58 @@ const Proveedores = (props) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [estadoSeleccionado, setEstadoSeleccionado] = useState('Activo'); //FILTRADO POR ESTADO
 
-    
-    
+    const [empleados, setEmpleados] = useState([]);
+
+    const datos = JSON.parse(localStorage.getItem('datosUsuario'));
+
+    const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+    var nuevoproveedor = "";
+    var editarproveedor = "";
+
+    const leerEmpleados = (e) => {
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_usuarios.php";
+        fetch(rutaServicio)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setEmpleados(data);
+            })
+    }
+    useEffect(() => {
+        leerEmpleados();
+    }, []);
+
+    const getNivel = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nivel}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const nivelusuario = getNivel(usuarioActual);
+
+    const limitarfuncion = (nivel) => {
+        if (nivel === 'Empleado') {
+            nuevoproveedor = "none";
+            editarproveedor = "none";
+        } else if (nivel === 'Gerente') {
+            nuevoproveedor = "none";
+            editarproveedor = "none";
+        } else if (nivel === 'Gestor de operaciones') {
+            nuevoproveedor = "";
+            editarproveedor = "";
+        }
+    };
+
+    limitarfuncion(nivelusuario);
+
     useEffect(() => {
         const fecthData = async () => {
             try {
-                const response = await fetch('https://profinal-production-2983.up.railway.app/listar_proveedores.php');
+                const response = await fetch('https://profinal-production.up.railway.app/listar_proveedores.php');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -39,7 +88,7 @@ const Proveedores = (props) => {
         fecthData();
     }, []);
 
-    
+
 
     //Actualizar campo de busqueda
     const searchUpdated = (term) => {
@@ -84,7 +133,7 @@ const Proveedores = (props) => {
             <section className="content-header">
                 <div className="container-fluid">
                     <div className="row mb-2">
-                        <div className="col-sm-6">
+                        <div className="col-sm-12">
                             <h1>Lista de Proveedores :</h1>
                         </div>
                     </div>
@@ -98,10 +147,11 @@ const Proveedores = (props) => {
                             <div className="card">
 
                                 <div className="row">
-                                    <div className="col-12 d-flex align-items-center justify-content-between">
+                                    <div className="col-12 d-flex align-items-center justify-content-between flex-wrap">
                                         <button type="submit" className="btn btn-success ml-4 mt-3"
-                                            onClick={() => navigate('./nuevo')}>
-                                            <i class="bi bi-patch-plus pr-2"></i>Nuevo Proveedor
+                                            onClick={() => navigate('./nuevo')} style={{ display: nuevoproveedor }}>
+                                            <FontAwesomeIcon icon={faPlus} className='pr-2' />
+                                            Nuevo Proveedor
                                         </button>
 
                                         <div className="form-inline mr-4 mt-3 ml-4">
@@ -117,7 +167,7 @@ const Proveedores = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline  mr-4 mt-3">
+                                        <div className="form-inline  mr-4 mt-3 ml-4">
                                             <div className="input-group">
                                                 <SearchInput
                                                     type="search"
@@ -127,7 +177,7 @@ const Proveedores = (props) => {
                                                 />
                                                 <div className="input-group-append">
                                                     <button className="btn btn-outline-secondary" type='button'>
-                                                        <i className="fas fa-search fa-fw"></i>
+                                                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -150,39 +200,45 @@ const Proveedores = (props) => {
                                                 <th>Distrito</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {proveedoresEstado.map((proveedor) => (
-                                                <tr key={proveedor.Codigo}>
-                                                    <td className="project-actions text-right">
-                                                        <Link
-                                                            to={`./editar/${proveedor.Codigo}`}
-                                                            className="btn btn-info btn-sm">
-                                                            <i className="fas fa-pencil-alt pr-2"></i>
-                                                            Editar
-                                                        </Link>
-                                                    </td>
-                                                    <td>{proveedor.Codigo}</td>
-                                                    <td>{proveedor.Nombre_Completo}</td>
-                                                    <td>{proveedor.RUC}</td>
-                                                    <td>{proveedor.Contacto}</td>
-                                                    <td>{proveedor.Telefono}</td>
-                                                    <td>{proveedor.Estado}</td>
-                                                    <td>{proveedor.Direccion}</td>
-                                                    <td>{proveedor.Distrito}</td>
-                                                </tr>
-                                            ))}
+                                        {proveedoresEstado.length === 0 ? (
+                                            <SinResultados columns={9} />
+                                        ) : (
+                                            <tbody>
+                                                {proveedoresEstado.map((proveedor) => (
+                                                    <tr key={proveedor.Codigo}>
+                                                        <td className="project-actions text-right">
+                                                            <Link style={{ display: nuevoproveedor }}
+                                                                to={`./editar/${proveedor.Codigo}`}
+                                                                className="btn btn-info btn-sm">
+                                                                <FontAwesomeIcon icon={faPen} className='pr-2' />
+                                                                Editar
+                                                            </Link>
+                                                        </td>
+                                                        <td>{proveedor.Codigo}</td>
+                                                        <td>{proveedor.Nombre_Completo}</td>
+                                                        <td>{proveedor.RUC}</td>
+                                                        <td>{proveedor.Contacto}</td>
+                                                        <td>{proveedor.Telefono}</td>
+                                                        <td>{proveedor.Estado}</td>
+                                                        <td>{proveedor.Direccion}</td>
+                                                        <td>{proveedor.Distrito}</td>
+                                                    </tr>
+                                                ))}
 
-                                        </tbody>
+                                            </tbody>
+                                        )}
+
+
 
                                     </table>
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=" >"
                                     onPageChange={handlePageClick}
                                     pageRangeDisplayed={5}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="< "
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"
@@ -201,8 +257,8 @@ const Proveedores = (props) => {
                     </div>
                 </div>
             </section>
-            
-            
+
+
         </div>
     );
 }

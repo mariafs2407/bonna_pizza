@@ -11,7 +11,7 @@ const GastosMensuales = (props) => {
     const [anios, setAnios] = useState([]);
 
     const leerAnios = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_gastosa%C3%B1o.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_gastosa%C3%B1o.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -28,7 +28,7 @@ const GastosMensuales = (props) => {
             formData.append('anio', idAnio);
             console.log(idAnio);
 
-            const response = await fetch("https://profinal-production-2983.up.railway.app/consultar_gastosmensuales.php",
+            const response = await fetch("https://profinal-production.up.railway.app/consultar_gastosmensuales.php",
                 {
                     method: 'POST',
                     body: formData

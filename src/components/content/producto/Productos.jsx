@@ -3,9 +3,10 @@ import SearchInput, { createFilter } from 'react-search-input';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCarrot } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faPlus, faCarrot, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import NuevoProducto from './NuevoProducto';
 import EditarProducto from './EditarProducto';
+import SinResultados from "../animacion/SinResultados";
 import './Productos';
 import '../../../index';
 
@@ -24,6 +25,53 @@ const Productos = (props) => {
     const [descontinuadoSeleccionado, setdescontinuadoSeleccionado] = useState('Disponible'); //FILTRADO POR DESCONTINUADO
     const [categoriaSeleccionado, setCategoriaSeleccionado] = useState('Todos'); //FILTRADO POR DESCONTINUADO
     const [categorias, setCategorias] = useState([]);
+    const [empleados, setEmpleados] = useState([]);
+
+    const datos = JSON.parse(localStorage.getItem('datosUsuario'));
+
+    const usuarioActual = datos[0] ? datos[0].Login_Usuario : '';
+
+    var nuevoproducto = "";
+    var editarproducto = "";
+
+    const leerEmpleados = (e) => {
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_usuarios.php";
+        fetch(rutaServicio)
+            .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                setEmpleados(data);
+            })
+    }
+    useEffect(() => {
+        leerEmpleados();
+    }, []);
+
+    const getNivel = (login) => {
+        const empleado = empleados.find((empleado) => empleado.Login === login);
+        if (empleado) {
+            return `${empleado.Nivel}`;
+        }
+        return "Empleado no encontrado";
+    };
+
+    const nivelusuario = getNivel(usuarioActual);
+
+    const limitarfuncion = (nivel) => {
+        if (nivel === 'Empleado') {
+            nuevoproducto = "none";
+            editarproducto = "none";
+        } else if (nivel === 'Gerente') {
+            nuevoproducto = "none";
+            editarproducto = "none";
+        } else if (nivel === 'Gestor de operaciones') {
+            nuevoproducto = "";
+            editarproducto = "";
+        }
+    };
+
+    limitarfuncion(nivelusuario);
 
     //ProductoModal
     const [productoEditando, setProductoEditando] = useState(null);
@@ -31,7 +79,7 @@ const Productos = (props) => {
     const [NuevaProductoModalOpen, setNuevaProductoModalOpen] = useState(false);
 
     const actualizarProductos = async () => {
-        const response = await fetch('https://profinal-production-2983.up.railway.app/listar_productos.php');
+        const response = await fetch('https://profinal-production.up.railway.app/listar_productos.php');
         const data = await response.json();
         setProductos(data);
     }
@@ -56,7 +104,7 @@ const Productos = (props) => {
 
 
     const leerCategorias = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_categorias.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_categorias.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -69,7 +117,7 @@ const Productos = (props) => {
     useEffect(() => {
         const fecthData = async () => {
             try {
-                const response = await fetch('https://profinal-production-2983.up.railway.app/listar_productos.php');
+                const response = await fetch('https://profinal-production.up.railway.app/listar_productos.php');
                 if (!response.ok) {
                     throw new Error('Error en la solicitud');
                 }
@@ -128,7 +176,7 @@ const Productos = (props) => {
             <section className="content-header">
                 <div className="container-fluid">
                     <div className="row mb-2">
-                        <div className="col-sm-6">
+                        <div className="col-sm-12">
                             <h1>Lista de Ingredientes :</h1>
                         </div>
                     </div>
@@ -144,12 +192,12 @@ const Productos = (props) => {
                                 <div className="row">
                                     <div className="col-12 ">
                                         <button type="submit" className="btn btn-success float-left ml-4 mt-3"
-                                            onClick={openNuevaProductoModal}>
+                                            onClick={openNuevaProductoModal} style={{ display: nuevoproducto }}>
                                             <FontAwesomeIcon className='pr-2' icon={faCarrot} style={{ color: "#fff", }} />
                                             Nuevo Ingrediente
                                         </button>
-
-                                        <div className="form-inline float-right mr-4 mt-3">
+                                    
+                                        <div className="form-inline float-right mr-4 mt-3  ml-3">
                                             <div className="input-group" data-widget="sidebar-search">
                                                 <SearchInput
                                                     type="search"
@@ -159,7 +207,7 @@ const Productos = (props) => {
                                                 />
                                                 <div className="input-group-append">
                                                     <button className="btn btn-outline-secondary" >
-                                                        <i className="fas fa-search fa-fw"></i>
+                                                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -167,8 +215,9 @@ const Productos = (props) => {
                                     </div>
                                 </div>
                                 <div className='row'>
-                                    <div className="col-12 d-flex align-items-center justify-content-center">
-                                        <div className="form-inline mr-4 mt-3">
+                                    <div className="col-12 d-flex align-items-center justify-content-center 
+                                                     flex-wrap">
+                                        <div className="form-inline mr-4 mt-3 ml-3">
                                             <label htmlFor="inputEstado" className='mr-3'>Seleccionar Estado :</label>
                                             <select
                                                 onChange={(e) => setEstadoSeleccionado(e.target.value)}
@@ -181,8 +230,8 @@ const Productos = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline mr-4 mt-3">
-                                            <label htmlFor="inputDescontinuado" className='mr-3'>Seleccionar Disponibilidad :</label>
+                                        <div className="form-inline mr-4 mt-3 ml-3">
+                                            <label htmlFor="inputDescontinuado" className='mr-3'><div className='d-none d-sm-block'>Seleccionar </div> Disponibilidad :</label>
                                             <select
                                                 onChange={(e) => setdescontinuadoSeleccionado(e.target.value)}
                                                 id="inputDescontinuado"
@@ -194,8 +243,8 @@ const Productos = (props) => {
                                             </select>
                                         </div>
 
-                                        <div className="form-inline mr-4 mt-3">
-                                            <label htmlFor="inputDescontinuado" className='mr-3'>Seleccionar Categoría :</label>
+                                        <div className="form-inline mr-4 mt-3 ml-3">
+                                            <label htmlFor="inputDescontinuado" className='mr-3'><div className='d-none d-sm-block'>Seleccionar </div> Categoría :</label>
                                             <select id="inputCategoria"
                                                 onChange={(e) => setCategoriaSeleccionado(e.target.value)}
                                                 className="form-control custom-select pr-4"
@@ -225,38 +274,44 @@ const Productos = (props) => {
                                                 <th>Estado</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {productoEstado.map((producto) => (
-                                                <tr key={producto.Codigo}>
-                                                    <td className="project-actions text-right">
-                                                        <button
-                                                            onClick={() => handleEditarProducto(producto.Codigo)}
-                                                            className="btn btn-info btn-sm"                                                        >
-                                                            <i className="fas fa-pencil-alt pr-2"></i>
-                                                            Editar
-                                                        </button>
-                                                    </td>
-                                                    <td>{producto.Codigo}</td>
-                                                    <td>{producto.Producto}</td>
-                                                    <td>{producto.Categoria}</td>
-                                                    <td>{producto.StockMinimo}</td>
-                                                    <td>{producto.U_Medida}</td>
-                                                    <td>{producto.Descontinuado}</td>
-                                                    <td>{producto.Estado}</td>
-                                                </tr>
-                                            ))}
+                                        {productoEstado.length === 0 ? (
+                                            <SinResultados columns={8} />
+                                        ) : (
+                                            <tbody>
+                                                {productoEstado.map((producto) => (
+                                                    <tr key={producto.Codigo}>
+                                                        <td className="project-actions text-right">
+                                                            <button style={{ display: editarproducto }}
+                                                                onClick={() => handleEditarProducto(producto.Codigo)}
+                                                                className="btn btn-info btn-sm"                                                        >
+                                                                <FontAwesomeIcon icon={faPen} className='pr-2' />
+                                                                Editar
+                                                            </button>
+                                                        </td>
+                                                        <td>{producto.Codigo}</td>
+                                                        <td>{producto.Producto}</td>
+                                                        <td>{producto.Categoria}</td>
+                                                        <td>{producto.StockMinimo}</td>
+                                                        <td>{producto.U_Medida}</td>
+                                                        <td>{producto.Descontinuado}</td>
+                                                        <td>{producto.Estado}</td>
 
-                                        </tbody>
+                                                    </tr>
+                                                ))}
+
+                                            </tbody>
+                                        )}
+
 
                                     </table>
                                 </div>
                                 <ReactPaginate
                                     breakLabel="..."
-                                    nextLabel="Siguiente >"
+                                    nextLabel=">"
                                     onPageChange={handlePageClick}
                                     pageRangeDisplayed={5}
                                     pageCount={pageCount}
-                                    previousLabel="< Anterior"
+                                    previousLabel="<"
                                     renderOnZeroPageCount={null}
                                     // estilos
                                     containerClassName="pagination justify-content-center"
@@ -279,8 +334,8 @@ const Productos = (props) => {
                 <EditarProducto
                     productoCodigo={productoEditando}
                     closeModal={() => {
-                        setIsModalOpen(false);                       
-                    }}      
+                        setIsModalOpen(false);
+                    }}
                     actualizarProductos={actualizarProductos}
                     productos={productos}
                 />
@@ -288,9 +343,9 @@ const Productos = (props) => {
             {/* Modal para nueva producto */}
             {NuevaProductoModalOpen && (
                 <NuevoProducto
-                closeModal={closeNuevaProductoModal}
-                actualizarProductos={actualizarProductos}
-                productos={productos}
+                    closeModal={closeNuevaProductoModal}
+                    actualizarProductos={actualizarProductos}
+                    productos={productos}
                 />
 
             )}

@@ -6,6 +6,8 @@ import Modal from 'react-modal';
 import "react-datepicker/dist/react-datepicker.css"; // estilos CSS
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrashCan, faBasketShopping, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import './IngresoProducto.css';
+import '../../../index';
 
 const IngresoProducto = () => {
     const navigate = useNavigate();
@@ -52,7 +54,7 @@ const IngresoProducto = () => {
 
 
     const leerProductos = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_productos_combo.php ";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_productos_combo.php ";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -63,7 +65,7 @@ const IngresoProducto = () => {
     }
 
     const leerProveedores = () => {
-        fetch('https://profinal-production-2983.up.railway.app/listar_proveedores.php')
+        fetch('https://profinal-production.up.railway.app/listar_proveedores.php')
             .then((response) => response.json())
             .then((data) => {
                 setProveedores(data);
@@ -74,7 +76,7 @@ const IngresoProducto = () => {
     };
 
     const leerEmpleados = (e) => {
-        const rutaServicio = "https://profinal-production-2983.up.railway.app/listar_empleados.php";
+        const rutaServicio = "https://profinal-production.up.railway.app/listar_empleados.php";
         fetch(rutaServicio)
             .then((response) => {
                 return response.json();
@@ -297,7 +299,7 @@ const IngresoProducto = () => {
                 denyButtonText: `Cancelar`,
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/insert_compracondetalle2.php', {
+                    fetch('https://profinal-production.up.railway.app/insert_compracondetalle2.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -515,7 +517,7 @@ const IngresoProducto = () => {
                                     <i className="ion ion-clipboard mr-2"></i>
                                     Detalle de Compra :
                                 </h3>
-                                <table className="table">
+                                <table className="table estiloScroll table-responsive">
                                     <thead>
                                         <tr>
                                             <th >#</th>
@@ -578,11 +580,7 @@ const IngresoProducto = () => {
                 </section>
 
                 <Modal isOpen={modalIsOpen} className="modal-dialog">
-                    <div className="modal-content"
-                        style={{
-                            backgroundColor: 'white', maxWidth: '500px', margin: '0 auto',
-                            padding: '16px', marginTop: '28px', borderRadius: '15px'
-                        }}>
+                    <div className="modal-content modal-contorno">
                         <div className="modal-header" style={{ padding: '16px' }}>
                             <h5 className="modal-title" style={{ fontSize: 'calc(1.275rem + .3vw)' }}>Editar Ingrediente</h5>
                             <button type="button" className="close" onClick={() => setModalIsOpen(false)}>
@@ -648,9 +646,9 @@ const IngresoProducto = () => {
                                 </div>
                             </form>
                         </div>
-                        <div className="modal-footer">
+                        <div className="modal-footer d-flex ">
                             <button type="button"
-                                className="btn btn-success"
+                                className="btn btn-success mx-auto"
                                 onClick={handleGuardarClick}>Guardar Cambios</button>
                         </div>
 

@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
+import MapView from '../usuarios/MapView';
+import Modal from 'react-modal';
 
 const EditarProveedor = (props) => {
     const navigate = useNavigate();
@@ -22,6 +24,40 @@ const EditarProveedor = (props) => {
     const [telefono, setTelefono] = useState('');
     const [ruc, setRuc] = useState('');
     const [distritocombo, setdistritocombo] = useState([]);
+    const [hasVerifiedRuc, setHasVerifiedRuc] = useState(false);
+    const [originalRuc, setOriginalRuc] = useState('');
+
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    Modal.setAppElement('#root');
+
+    const handleOpenMap = () => {
+        setIsMapOpen(true);
+    };
+
+    const handleCloseMap = () => {
+        setIsMapOpen(false);
+        console.log(isMapOpen)
+    };
+
+    const handleMapClick = (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDIPkzk4HFDFDh6luCvOUEPzp1F6pXhxaY`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.results[0].address_components);
+                const addressComponents = data.results[0].address_components;
+                const districtComponent = addressComponents.find(component => component.types.includes('administrative_area_level_2'));
+                const district = districtComponent ? districtComponent.long_name : '';
+                setDireccion(data.results[0].formatted_address);
+                setDistrito(district);
+            })
+            .catch(error => console.error(error));
+
+        handleCloseMap();
+    };
 
     const opcionesCargoConacto = [
         'Gerente de ventas',
@@ -49,7 +85,7 @@ const EditarProveedor = (props) => {
     const fecthProveedor = () => {
         const formData = new URLSearchParams();
         formData.append('codigo', id);
-        fetch('https://profinal-production-2983.up.railway.app/consultar_proveedor.php', {
+        fetch('https://profinal-production.up.railway.app/consultar_proveedor.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -70,6 +106,57 @@ const EditarProveedor = (props) => {
             .catch((error) => {
                 console.error('Error al obtener proveedor: ', error);
             })
+    };
+
+    const handleRucChange = (e) => {
+        const val = e.target.value;
+        if (/^\d*$/.test(val) && val.length <= 11) {
+            setRuc(val);
+        }
+
+        if (val.length === 11) { // Asume que un RUC válido tiene 11 dígitos
+            Swal.fire({
+                title: '¿Quieres verificar el RUC?',
+                text: 'Serás redirigido a la página de SUNAT para verificar el RUC.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, verificar',
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open('https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp', '_blank');
+                    setHasVerifiedRuc(true);
+                }
+            });
+        }
+    };
+
+
+    const checkIfRucExists = async (ruc) => {
+        try {
+            console.log('Verificando Ruc:', ruc);
+            const response = await fetch('https://profinal-production.up.railway.app/listar_proveedores.php');
+            const data = await response.json();
+            console.log('Datos recibidos de la API:', data);
+            console.log(data);
+            console.log(data.filter(prv => String(prv.RUC).trim() === String(ruc).trim()));
+            const usersWithSameRUC = data.filter(prv => String(prv.RUC).trim() === String(ruc).trim());
+            console.log('Proveedores con el mismo RUC:', usersWithSameRUC);
+            if (usersWithSameRUC.length > 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Error de validación',
+                    text: `El Nro. de RUC ya existe. Por favor, escriba otro.`,
+                });
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (error) {
+            console.error('Ocurrió un error al verificar el nro. de documento:', error);
+            return false;
+        }
     };
 
     //validaciones:
@@ -120,6 +207,16 @@ const EditarProveedor = (props) => {
     const handleSaveChanges = (e) => {
         e.preventDefault();
 
+        if (ruc !== originalRuc && !hasVerifiedRuc) {
+            Swal.fire({
+                title: 'Por favor verifica el RUC',
+                text: 'Debes verificar el RUC antes de poder guardar el nuevo proveedor.',
+                icon: 'info',
+                confirmButtonText: 'Entendido'
+            });
+            return false;
+        }
+
         if (validacionForm()) {
             const datos = JSON.parse(localStorage.getItem('datosUsuario'));
             console.log(datos)
@@ -149,7 +246,7 @@ const EditarProveedor = (props) => {
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/update_proveedor.php', {
+                    fetch('https://profinal-production.up.railway.app/update_proveedor.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -194,6 +291,7 @@ const EditarProveedor = (props) => {
             setDireccion(proveedortData.Direccion);
             setDistrito(proveedortData.Distrito);
             setRuc(proveedortData.RUC);
+            setOriginalRuc(proveedortData.RUC);
             setTelefono(proveedortData.Telefono);
         }
     }, [proveedor])
@@ -261,12 +359,14 @@ const EditarProveedor = (props) => {
                                                         className="form-control"
                                                         value={ruc}
                                                         placeholder="Ingrese su numero de RUC"
-                                                        onChange={(e) => {
-                                                            const val = e.target.value;
-                                                            if (/^\d*$/.test(val) && val.length <= 11) {
-                                                                setRuc(val);
+                                                        onBlur={async () => {
+                                                            //verificar solo si se cambie el numero 
+                                                            if (proveedor[0]?.RUC !== ruc) {
+                                                                const RucExiste = await checkIfRucExists(ruc);
+                                                                
                                                             }
                                                         }}
+                                                        onChange={handleRucChange}
                                                         data-inputmask='"mask": "99999999999"'
                                                         data-mask
                                                     />
@@ -319,7 +419,7 @@ const EditarProveedor = (props) => {
                                                         className="form-control"
                                                         value={telefono}
                                                         placeholder="Ingrese su numero de telefono"
-                                                        onChange={(e) => { 
+                                                        onChange={(e) => {
                                                             const val = e.target.value;
                                                             if (/^\d*$/.test(val) && val.length <= 9) {
                                                                 setTelefono(val);
@@ -339,6 +439,7 @@ const EditarProveedor = (props) => {
                                                         name='Direccion'
                                                         id="inputDireccion"
                                                         value={direccion}
+                                                        onClick={handleOpenMap}
                                                         className="form-control"
                                                         placeholder="Direccion"
                                                         onChange={(e) => setDireccion(e.target.value)}
@@ -399,6 +500,28 @@ const EditarProveedor = (props) => {
                     </form>
                 </section>
             </div>
+            <Modal
+                isOpen={isMapOpen}
+                onRequestClose={handleCloseMap}
+                contentLabel="Mapa"
+                style={{
+                    content: {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '50%',
+                        marginLeft: '10%',
+
+                        transform: 'translate(-50%, -50%)',
+                        width: '60%',
+                        height: '60%',
+                    },
+                }}
+            >
+                <MapView onMapClick={handleMapClick} />
+            </Modal>
         </div>
     );
 }

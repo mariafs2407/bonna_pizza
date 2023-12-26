@@ -37,7 +37,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
         const formData = new URLSearchParams();
         formData.append('codigo', productoCodigo);
 
-        fetch('https://profinal-production-2983.up.railway.app/consultar_producto.php', {
+        fetch('https://profinal-production.up.railway.app/consultar_producto.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,7 +67,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
     };
 
     const fetchCategorias = () => {
-        fetch('https://profinal-production-2983.up.railway.app/listar_categorias.php')
+        fetch('https://profinal-production.up.railway.app/listar_categorias.php')
             .then((response) => response.json())
             .then((data) => {
                 setCategorias(data);
@@ -114,7 +114,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
     const validarNombreProducto = () => {
         // Verificar si el nombre del producto ya existe en la lista actual
-        return productos.some((producto) => producto.Producto === nomProducto);
+        return false;
     };
 
     // editar producto
@@ -165,7 +165,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                 }).then((result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        fetch('https://profinal-production-2983.up.railway.app/update_producto.php', {
+                        fetch('https://profinal-production.up.railway.app/update_producto.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -288,7 +288,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
                                             <div className="col-12 ">
                                                 <div className='row'>
-                                                    <div className='col-6'>
+                                                    <div className='col-lg-6 col-sm-12'>
                                                         <div className="form-group">
                                                             <label htmlFor="inputDescontinuado">Descontinuado</label>
                                                             <select
@@ -304,7 +304,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         </div></div>
 
 
-                                                    <div className='col-6'>
+                                                    <div className='col-lg-6 col-sm-12'>
                                                         <div className="form-group">
                                                             <label htmlFor="inputEstado">Estado</label>
                                                             <select
@@ -323,7 +323,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
 
                                             <div className="col-12 ">
                                                 <div className='row'>
-                                                    <div className="col-8 ">
+                                                    <div className="col-lg-8 col-sm-12">
                                                         <div className="form-group">
                                                             <label htmlFor="inputUnidadMedida">Unidad de Medida</label>
                                                             <select
@@ -342,7 +342,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         </div>
                                                     </div>
 
-                                                    <div className='col-4'>
+                                                    <div className='col-lg-4 col-sm-12'>
                                                         <div className="form-group">
                                                             <label for="inputStockMinimo">Stock Minimo</label>
                                                             <input
@@ -371,7 +371,7 @@ const EditarProducto = ({ productoCodigo, closeModal, actualizarProductos, produ
                                                         id="inputJustificacionStockMinimo"
                                                         className="form-control "
                                                         placeholder="Justificacion del Stock Minimo"
-                                                        style={{ backgroundColor: '#007bff', color: '#fff', height: '90px' }}
+                                                        style={{ backgroundColor: '#007bff', color: '#fff', height: '120px' }}
 
                                                     />
                                                 </div>

@@ -7,37 +7,6 @@
     margin-top: 7%;
 }
 
-.table.table-head-fixed thead tr:nth-child(1) th {
-    z-index: 1 !important;
-    position: static;
-}
-.modal {
-    z-index: 1000 !important; /* Un número alto para asegurar que el modal esté al frente */
-    padding-top: 7%;
-    padding-left: 8%;
-}
-.page-item.active .page-link{
-    z-index: 0 !important;
-}
-
-@media only screen and (max-width: 823px) {
-    .modal {
-        padding-top: 10% !important;
-    }
-}
-
-@media only screen and (max-width: 576px) {
-    .modal {
-        padding-top: 15% !important;
-    }
-}
-
-@media only screen and (max-width: 380px) {
-    .modal {
-        padding-top: 20% !important;
-    }
-}
-
 @media only screen and (max-width: 1006px) {
     .modal-dialog {
         padding-top: 8%;

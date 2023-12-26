@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import MapView from '../usuarios/MapView';
+import Modal from 'react-modal';
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -20,6 +22,40 @@ function NuevoProveedor(props) {
 
     const [ruc, SetRuc] = useState('');
     const [rucExiste, setrucExiste] = useState([]);
+    const [hasVerifiedRuc, setHasVerifiedRuc] = useState(false);
+
+
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    Modal.setAppElement('#root');
+
+    const handleOpenMap = () => {
+        setIsMapOpen(true);
+    };
+
+    const handleCloseMap = () => {
+        setIsMapOpen(false);
+        console.log(isMapOpen)
+    };
+
+    const handleMapClick = (event) => {
+        const lat = event.latLng.lat();
+        const lng = event.latLng.lng();
+
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyDIPkzk4HFDFDh6luCvOUEPzp1F6pXhxaY`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                console.log(data.results[0].address_components);
+                const addressComponents = data.results[0].address_components;
+                const districtComponent = addressComponents.find(component => component.types.includes('administrative_area_level_2'));
+                const district = districtComponent ? districtComponent.long_name : '';
+                setDireccion(data.results[0].formatted_address);
+                setDistrito(district);
+            })
+            .catch(error => console.error(error));
+
+        handleCloseMap();
+    };
 
     const opcionesCargoConacto = [
         'Gerente de ventas',
@@ -40,7 +76,7 @@ function NuevoProveedor(props) {
         try {
             const FormData = new URLSearchParams();
             FormData.append("vruc", ruc)
-            const apiUrl = `https://profinal-production-2983.up.railway.app/ruc_existe.php`;
+            const apiUrl = `https://profinal-production.up.railway.app/ruc_existe.php`;
 
             fetch(apiUrl, {
                 method: 'POST',
@@ -64,7 +100,7 @@ function NuevoProveedor(props) {
         const FormData = new URLSearchParams();
         FormData.append("vruc", ruc)
 
-        fetch("https://profinal-production-2983.up.railway.app/validar_ruc.php", {
+        fetch("https://profinal-production.up.railway.app/validar_ruc.php", {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -89,14 +125,68 @@ function NuevoProveedor(props) {
             });
     };
 
+    const handleRucChange = (e) => {
+        const ruc = e.target.value;
+        SetRuc(ruc);
+    
+        if (ruc.length === 11) { // Asume que un RUC válido tiene 11 dígitos
+            Swal.fire({
+                title: '¿Quieres verificar el RUC?',
+                text: 'Serás redirigido a la página de SUNAT para verificar el RUC.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, verificar',
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.open('https://e-consultaruc.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaWeb.jsp', '_blank');
+                    setHasVerifiedRuc(true);
+                }
+            });
+        }
+    };
 
-
+    const checkIfRucExists = async (ruc) => {
+        try {
+            console.log('Verificando Ruc:', ruc);
+            const response = await fetch('https://profinal-production.up.railway.app/listar_proveedores.php');
+            const data = await response.json();
+            console.log('Datos recibidos de la API:', data);
+            console.log(data);
+            console.log(data.filter(prv => String(prv.RUC).trim() === String(ruc).trim()));
+            const usersWithSameRUC = data.filter(prv => String(prv.RUC).trim() === String(ruc).trim());
+            console.log('Proveedores con el mismo RUC:', usersWithSameRUC);
+            if (usersWithSameRUC.length > 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Error de validación',
+                    text: `El Nro. de RUC ya existe. Por favor, escriba otro.`,
+                });
+                return true;
+            } else {
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('Ocurrió un error al verificar el nro. de documento:', error);
+            return false;
+        }
+    };
+    
     //validaciones:
     const validacionForm = async () => {
         const solo_numero = /^[0-9]+$/;
         const rucEmpiezaEn10o20 = /^(10|20)\d{9}$/;
 
-        if (!nombre === '' || !apellido === '' || !nombreContacto === '' ||
+        if (!hasVerifiedRuc) {
+            Swal.fire({
+                title: 'Por favor verifica el RUC',
+                text: 'Debes verificar el RUC antes de poder guardar el nuevo proveedor.',
+                icon: 'info',
+                confirmButtonText: 'Entendido'
+            });
+            return false;
+        } else if (!nombre === '' || !apellido === '' || !nombreContacto === '' ||
             !cargoContacto === '' || !direccion === '' || !distrito === '' ||
             !telefono === '' ||
             !ruc === '') {
@@ -178,7 +268,7 @@ function NuevoProveedor(props) {
             }).then((result) => {
 
                 if (result.isConfirmed) {
-                    fetch('https://profinal-production-2983.up.railway.app/insert_proveedor.php', {
+                    fetch('https://profinal-production.up.railway.app/insert_proveedor.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -261,12 +351,9 @@ function NuevoProveedor(props) {
                                                         <label htmlFor="inputRuc">Ruc</label>
                                                         <input type="text"
                                                             value={ruc}
-                                                            onChange={(e) => {
-                                                                const val = e.target.value;
-                                                                if (/^\d*$/.test(val) && val.length <= 11) {
-                                                                    SetRuc(val);
-                                                                    
-                                                                }
+                                                            onChange={handleRucChange}
+                                                            onBlur={async () => {
+                                                                const RucExiste = await checkIfRucExists(ruc);
                                                             }}
                                                             id="inputRuc" className="form-control"
                                                             placeholder="Numero de RUC"
@@ -326,7 +413,12 @@ function NuevoProveedor(props) {
                                                 <div className="col-md-6">
                                                     <div className="form-group">
                                                         <label htmlFor="inputDireccion">Direccion</label>
-                                                        <input type="text" value={direccion} onChange={(e) => setDireccion(e.target.value)} id="inputDireccion" className="form-control" placeholder="Direccion" />
+                                                        <input type="text" value={direccion} 
+                                                        onChange={(e) => setDireccion(e.target.value)}
+                                                        onClick={handleOpenMap} 
+                                                        id="inputDireccion" 
+                                                        className="form-control" 
+                                                        placeholder="Direccion" />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-6">
@@ -365,6 +457,29 @@ function NuevoProveedor(props) {
                     </form>
                 </section>
             </div>
+
+            <Modal
+                isOpen={isMapOpen}
+                onRequestClose={handleCloseMap}
+                contentLabel="Mapa"
+                style={{
+                    content: {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        right: 'auto',
+                        bottom: 'auto',
+                        marginRight: '50%',
+                        marginLeft: '10%',
+
+                        transform: 'translate(-50%, -50%)',
+                        width: '60%',
+                        height: '60%',
+                    },
+                }}
+            >
+                <MapView onMapClick={handleMapClick} />
+            </Modal>
         </div>
     );
 }
