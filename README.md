@@ -11,7 +11,4 @@ Este proyecto fue creado en colaboración y representa la plataforma de gestión
 
 4. **Gestión de Stock Mínimo:** La aplicación monitorea el nivel de existencias de los productos y alerta cuando un producto alcanza su stock mínimo. Esta funcionalidad mejora la eficiencia en la gestión de la mercadería y evita problemas de desabastecimiento.
 
-## Contribuciones y Colaboradores
-Este proyecto fue posible gracias a la colaboración de [Nombre del Colaborador 1], [Nombre del Colaborador 2], [Nombre del Colaborador 3], etc.
 
-¡Gracias por contribuir al éxito de Bonne Pizza!
