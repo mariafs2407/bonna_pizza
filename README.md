@@ -11,4 +11,16 @@ Este proyecto fue creado en colaboración y representa la plataforma de gestión
 
 4. **Gestión de Stock Mínimo:** La aplicación monitorea el nivel de existencias de los productos y alerta cuando un producto alcanza su stock mínimo. Esta funcionalidad mejora la eficiencia en la gestión de la mercadería y evita problemas de desabastecimiento.
 
+## Principales Capturas
 
+### Captura de login de la página
+![Captura de login de la página](./src/assets/captura/imagen1.PNG)
+
+### Captura de la página principal
+![Captura de la página principal](./src/assets/captura/imagen2.PNG)
+
+### Captura de la sección de informes principales
+![Captura de la sección de informes principales](./src/assets/captura/imagen3.PNG)
+
+### Captura de consulta de stock actual
+![Captura de consulta de stock actual](./src/assets/captura/imagen4.PNG)
